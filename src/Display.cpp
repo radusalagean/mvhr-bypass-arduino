@@ -17,12 +17,12 @@ void Display::initBacklight()
 void Display::render()
 {
     uint8_t i;
-    ucg.setFont(ucg_font_fub20_hr);
+    ucg.setFont(ucg_font_courR14_tr);
     ucg.setColor(255, 255, 255);
     ucg.setPrintPos(0, 30);
-    ucg.print("Power");
+    ucg.print(F("Power"));
     ucg.setPrintPos(0, 60);
-    ucg.print("Off");
+    ucg.print(F("Off"));
 
     for (i = 5; i > 0; i--)
     {
@@ -33,7 +33,7 @@ void Display::render()
     }
     powerDown();
     ucg.setPrintPos(0, 90);
-    ucg.print("fail?");
+    ucg.print(F("fail?"));
     delay(2000);
     ucg.clearScreen();
     powerUp();

@@ -1,5 +1,6 @@
 #include "Clock.h"
 #include "Display.h"
+#include "ExternalStorage.h"
 
 #define BAUD_RATE 9600
 
@@ -19,12 +20,12 @@
  * D1 (TX, UART in) -
  * D2 (Interrup compatible) -
  * D3 (Interrup compatible, PWM) -
- * D4 -
- * D5 (PWM) -
- * D6 (PWM) -
- * D7 -
- * D8 -
- * D9 (PWM) -
+ * D4 - Display (RESET)
+ * D5 (PWM) - Display (CD - A0)
+ * D6 (PWM) - Display (CS)
+ * D7 - Display (DATA - SCA)
+ * D8 - Display (CLOCK - SCL)
+ * D9 (PWM) - Display Backlight
  * D10 (SPI SS, PWM) - SD Card (Logging shield)
  * D11 (SPI MOSI, PWM) - SD Card (Logging shield)
  * D12 (SPI MISO) - SD Card (Logging shield)
@@ -36,13 +37,18 @@
 
 Clock clock;
 Display display;
+ExternalStorage externalStorage;
 
 void setup(void)
 {
     Serial.begin(BAUD_RATE);
     clock.init();
     display.init();
-    Serial.println("Setup done");
+    externalStorage.init();
+    Serial.println(sizeof(clock));
+    Serial.println(sizeof(display));
+    Serial.println(sizeof(externalStorage));
+    Serial.println();
 }
 
 void loop(void)
@@ -51,4 +57,5 @@ void loop(void)
     DateTime now = clock.now();
     Serial.println(now.unixtime());
     display.render();
+    // externalStorage.printStorageInfo();
 }
