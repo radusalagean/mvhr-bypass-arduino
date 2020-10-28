@@ -1,7 +1,9 @@
 #include "Clock.h"
 
-void Clock::init() {
-    if (!rtc.begin()) {
+void Clock::init() 
+{
+    if (!rtc.begin()) 
+    {
         // RTC Chip not found
         Serial.println("Unable to find RTC");
         Serial.flush();
@@ -10,6 +12,7 @@ void Clock::init() {
     Serial.println("RTC initialized successfully");
 }
 
-DateTime Clock::now() {
+DateTime Clock::now()
+{
     return rtc.now();
 }
