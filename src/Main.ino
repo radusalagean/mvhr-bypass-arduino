@@ -1,4 +1,5 @@
 #include "Clock.h"
+#include "Display.h"
 
 #define BAUD_RATE 9600
 
@@ -34,11 +35,13 @@
  * */
 
 Clock clock;
+Display display;
 
 void setup(void)
 {
     Serial.begin(BAUD_RATE);
     clock.init();
+    display.init();
     Serial.println("Setup done");
 }
 
@@ -47,5 +50,5 @@ void loop(void)
     Serial.println(millis());
     DateTime now = clock.now();
     Serial.println(now.unixtime());
-    delay(1000);
+    display.render();
 }
