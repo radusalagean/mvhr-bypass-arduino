@@ -6,37 +6,14 @@ void Display::init()
     ucg.begin(UCG_FONT_MODE_SOLID);
     ucg.clearScreen();
     ucg.setRotate90();
+    setColorRGB(255, 255, 255);
+    ucg.setFont(ucg_font_courR12_mr);
 }
 
 void Display::initBacklight()
 {
     pinMode(PIN_BACKLIGHT, OUTPUT);
     digitalWrite(PIN_BACKLIGHT, HIGH);
-}
-
-void Display::render()
-{
-    uint8_t i;
-    ucg.setFont(ucg_font_courR14_tr);
-    ucg.setColor(255, 255, 255);
-    ucg.setPrintPos(0, 30);
-    ucg.print(F("Power"));
-    ucg.setPrintPos(0, 60);
-    ucg.print(F("Off"));
-
-    for (i = 5; i > 0; i--)
-    {
-        ucg.setPrintPos(0, 90);
-        ucg.setColor(0, 255, 0);
-        ucg.print(i);
-        delay(1000);
-    }
-    powerDown();
-    ucg.setPrintPos(0, 90);
-    ucg.print(F("fail?"));
-    delay(2000);
-    ucg.clearScreen();
-    powerUp();
 }
 
 void Display::powerDown()
@@ -50,4 +27,14 @@ void Display::powerUp()
     ucg.powerUp();
     delay(200);
     digitalWrite(PIN_BACKLIGHT, HIGH);
+}
+
+void Display::setColorRGB(uint8_t idx, uint8_t r, uint8_t g, uint8_t b)
+{
+    ucg.setColor(idx, b, g, r);
+}
+
+void Display::setColorRGB(uint8_t r, uint8_t g, uint8_t b)
+{
+    ucg.setColor(b, g, r);
 }

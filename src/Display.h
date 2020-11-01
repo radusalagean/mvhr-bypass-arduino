@@ -12,17 +12,23 @@
 
 #define PIN_BACKLIGHT 9
 
+#define DISPLAY_WIDTH 160
+#define DISPLAY_HEIGHT 128
+
 class Display 
 {
 private:
-    Ucglib_ST7735_18x128x160_SWSPI ucg = Ucglib_ST7735_18x128x160_SWSPI(/*sclk=*/ 8, /*data=*/ 7, /*cd=*/ 5, /*cs=*/ 6, /*reset=*/ 4);
-    // Ucglib_ST7735_18x128x160_HWSPI ucg = Ucglib_ST7735_18x128x160_HWSPI(/*cd=*/ 5, /*cs=*/ 6, /*reset=*/ 4);
     void initBacklight();
     void powerDown();
     void powerUp();
 public:
+    Ucglib_ST7735_18x128x160_SWSPI ucg = Ucglib_ST7735_18x128x160_SWSPI(/*sclk=*/ 8, /*data=*/ 7, /*cd=*/ 5, /*cs=*/ 6, /*reset=*/ 4);
+    // Ucglib_ST7735_18x128x160_HWSPI ucg = Ucglib_ST7735_18x128x160_HWSPI(/*cd=*/ 5, /*cs=*/ 6, /*reset=*/ 4);
     void init();
-    void render();
+    // The colors on my display are swapped, it interprets R as B and B as R, 
+    //  so I added helper methods here to account for that
+    void setColorRGB(uint8_t idx, uint8_t r, uint8_t g, uint8_t b);
+    void setColorRGB(uint8_t r, uint8_t g, uint8_t b);
 };
 
 #endif
