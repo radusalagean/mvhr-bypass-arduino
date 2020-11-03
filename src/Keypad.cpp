@@ -17,7 +17,7 @@ void Keypad::onInterrupt()
     }
     if (keyToProcess != KEY_NONE)
     {
-        Serial.println(F("Previous interrupt not processed yet"));
+        // Serial.println(F("Previous interrupt not processed yet"));
         return;
     }
     uint16_t analogInput = analogRead(ANALOG_PIN);

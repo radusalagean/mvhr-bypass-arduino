@@ -22,8 +22,8 @@ private:
     void powerDown();
     void powerUp();
 public:
-    Ucglib_ST7735_18x128x160_SWSPI ucg = Ucglib_ST7735_18x128x160_SWSPI(/*sclk=*/ 8, /*data=*/ 7, /*cd=*/ 5, /*cs=*/ 6, /*reset=*/ 4);
-    // Ucglib_ST7735_18x128x160_HWSPI ucg = Ucglib_ST7735_18x128x160_HWSPI(/*cd=*/ 5, /*cs=*/ 6, /*reset=*/ 4);
+    // Ucglib_ST7735_18x128x160_SWSPI ucg = Ucglib_ST7735_18x128x160_SWSPI(/*sclk=*/ 13, /*data=*/ 11, /*cd=*/ 5, /*cs=*/ 6, /*reset=*/ 4);
+    Ucglib_ST7735_18x128x160_HWSPI ucg = Ucglib_ST7735_18x128x160_HWSPI(/*cd=*/ 5, /*cs=*/ 6, /*reset=*/ 4);
     void init();
     // The colors on my display are swapped, it interprets R as B and B as R, 
     //  so I added helper methods here to account for that

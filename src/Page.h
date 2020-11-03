@@ -19,24 +19,27 @@ class Page
 private:
     
 protected:
+    Page(Display* display);
+    Display* display = NULL;
     bool invalidated = true;
-    void drawControlArea(Display& display);
+    void drawControlArea();
 public:
     ControlAreaAction* leftAction = NULL;
     ControlAreaAction* rightAction = NULL;
-    virtual void render(Display& display);
+    virtual void render();
     void processControlAreaAction(ControlAreaAction& action);
-    virtual bool processOpcode(uint8_t& opcode);
+    virtual bool processOpcode(const uint8_t& opcode);
 };
 
 class HomePage : public Page
 {
 private:
-    
+    bool hrEnabled = false;
+    void drawHrState();
 public:
-    HomePage();
-    void render(Display& display);
-    bool processOpcode(uint8_t& opcode);
+    HomePage(Display* display);
+    void render();
+    bool processOpcode(const uint8_t& opcode);
 };
 
 class MenuPage : public Page

@@ -40,17 +40,17 @@
  * SCL (I2C Clock) -
  * */
 
-Clock clock;
+// Clock clock;
 Display display;
 ExternalStorage externalStorage;
 Keypad keypad;
-UserJourney userJourney;
+UserJourney userJourney = UserJourney(&display);
 
 void setup(void)
 {
     Serial.begin(BAUD_RATE);
     prepareInterrupts();
-    clock.init();
+    // clock.init();
     display.init();
     externalStorage.init();
     userJourney.init();
@@ -58,14 +58,14 @@ void setup(void)
 
 void loop(void)
 {
-    // delay(1000);
     uint8_t keyToProcess = keypad.getKeyToProcess();
     if (keyToProcess != KEY_NONE)
     {
         userJourney.processKey(keyToProcess);
         keypad.markAsProcessed();
     }
-    userJourney.render(display);
+    userJourney.render();
+    externalStorage.printStorageInfo();
 }
 
 void printFreeMemory()

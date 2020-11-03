@@ -2,31 +2,44 @@
 
 ControlAreaAction controlAreaActions[] =
 {
-    { "Left", OPCODE_TEST_L },
-    { "Right", OPCODE_TEST_R }
+    { "HR on", OPCODE_HR_ON },
+    { "HR off", OPCODE_HR_OFF }
 };
 
 /**
  * BASE page
  **/
 
-void Page::drawControlArea(Display& display)
+Page::Page(Display* display)
 {
-    display.ucg.setFontPosBottom();
-    display.ucg.drawLine(0, DISPLAY_HEIGHT - COMMAND_AREA_HEIGHT,
+    Serial.println(F("Base page ctor called"));
+    this->display = display;
+}
+
+void Page::drawControlArea()
+{
+    display->ucg.setFontPosBottom();
+    display->setColorRGB(255, 255, 255);
+    display->ucg.drawLine(0, DISPLAY_HEIGHT - COMMAND_AREA_HEIGHT,
         DISPLAY_WIDTH, DISPLAY_HEIGHT - COMMAND_AREA_HEIGHT);
     if (leftAction != NULL)
     {
-        display.ucg.setPrintPos(0, DISPLAY_HEIGHT);
-        display.ucg.print(leftAction->text);
+        Serial.println(leftAction->text);
+        display->ucg.setPrintPos(0, DISPLAY_HEIGHT);
+        display->ucg.print(leftAction->text);
     }
     if (rightAction != NULL)
     {
-        ucg_int_t textWidth = display.ucg.getStrWidth(rightAction->text);
-        display.ucg.setPrintPos(DISPLAY_WIDTH - textWidth, DISPLAY_HEIGHT);
-        display.ucg.print(rightAction->text);
+        ucg_int_t textWidth = display->ucg.getStrWidth(rightAction->text);
+        display->ucg.setPrintPos(DISPLAY_WIDTH - textWidth, DISPLAY_HEIGHT);
+        display->ucg.print(rightAction->text);
     }
-    display.ucg.setFontPosBaseline();
+    display->ucg.setFontPosBaseline();
+}
+
+void Page::render()
+{
+
 }
 
 void Page::processControlAreaAction(ControlAreaAction& action)
@@ -34,7 +47,7 @@ void Page::processControlAreaAction(ControlAreaAction& action)
     processOpcode(action.opcode);
 }
 
-bool Page::processOpcode(uint8_t& opcode)
+bool Page::processOpcode(const uint8_t& opcode)
 {
     Serial.println(F("base attempt to process opcode"));
     // TODO Handle Go Home OPCODE
@@ -45,24 +58,39 @@ bool Page::processOpcode(uint8_t& opcode)
  * HOME page
  **/
 
-HomePage::HomePage()
+HomePage::HomePage(Display* display) : Page::Page(display)
 {
     leftAction = &controlAreaActions[0];
-    rightAction = &controlAreaActions[1];
 }
 
-void HomePage::render(Display& display)
+void HomePage::render()
 {
     if (!invalidated)
     {
         return;
     }
-    Serial.println(F("draw page"));
-    drawControlArea(display);
+    drawControlArea();
+    drawHrState();
     invalidated = false;
 }
 
-bool HomePage::processOpcode(uint8_t& opcode)
+void HomePage::drawHrState()
+{
+    if (hrEnabled)
+    {
+        display->setColorRGB(224, 43, 43);
+    }
+    else
+    {
+        display->setColorRGB(34, 174, 240);
+    }
+    display->ucg.drawDisc(DISPLAY_WIDTH / 2,
+                          (DISPLAY_HEIGHT - COMMAND_AREA_HEIGHT) / 2,
+                          12,
+                          UCG_DRAW_ALL);
+}
+
+bool HomePage::processOpcode(const uint8_t& opcode)
 {
     if (Page::processOpcode(opcode))
     {
@@ -71,11 +99,15 @@ bool HomePage::processOpcode(uint8_t& opcode)
     }
     switch (opcode)
     {
-    case OPCODE_TEST_L:
-        Serial.println(F("OPCODE_TEST_L handled"));
+    case OPCODE_HR_ON:
+        hrEnabled = true;
+        leftAction = &controlAreaActions[1];
+        invalidated = true;
         break;
-    case OPCODE_TEST_R:
-        Serial.println(F("OPCODE_TEST_R handled"));
+    case OPCODE_HR_OFF:
+        hrEnabled = false;
+        leftAction = &controlAreaActions[0];
+        invalidated = true;
         break;
     default:
         break;

@@ -6,7 +6,6 @@ void Display::init()
     ucg.begin(UCG_FONT_MODE_SOLID);
     ucg.clearScreen();
     ucg.setRotate90();
-    setColorRGB(255, 255, 255);
     ucg.setFont(ucg_font_courR12_mr);
 }
 

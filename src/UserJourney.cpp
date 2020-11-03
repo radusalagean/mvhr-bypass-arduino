@@ -1,8 +1,13 @@
 #include "UserJourney.h"
 
+UserJourney::UserJourney(Display* display)
+{
+    this->display = display;
+}
+
 void UserJourney::init()
 {
-    currentPage = new HomePage();
+    currentPage = new HomePage(display);
 }
 
 void UserJourney::processKey(uint8_t &key)
@@ -35,7 +40,7 @@ void UserJourney::processKey(uint8_t &key)
     }
 }
 
-void UserJourney::render(Display &display)
+void UserJourney::render()
 {
-    currentPage->render(display);
+    currentPage->render();
 }
