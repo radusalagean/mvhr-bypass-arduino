@@ -65,7 +65,7 @@ void loop(void)
         keypad.markAsProcessed();
     }
     userJourney.render();
-    externalStorage.printStorageInfo();
+    // externalStorage.printStorageInfo();
 }
 
 void printFreeMemory()

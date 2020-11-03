@@ -18,23 +18,17 @@ Page::Page(Display* display)
 
 void Page::drawControlArea()
 {
-    display->ucg.setFontPosBottom();
-    display->setColorRGB(255, 255, 255);
-    display->ucg.drawLine(0, DISPLAY_HEIGHT - COMMAND_AREA_HEIGHT,
-        DISPLAY_WIDTH, DISPLAY_HEIGHT - COMMAND_AREA_HEIGHT);
+    display->tft.setTextColor(TFT_WHITE, TFT_BLACK);
+    display->tft.drawLine(0, PAGE_HEIGHT,
+        DISPLAY_WIDTH, PAGE_HEIGHT, TFT_WHITE);
     if (leftAction != NULL)
     {
-        Serial.println(leftAction->text);
-        display->ucg.setPrintPos(0, DISPLAY_HEIGHT);
-        display->ucg.print(leftAction->text);
+        display->tft.drawString(leftAction->text, 0, DISPLAY_HEIGHT, 2);
     }
     if (rightAction != NULL)
     {
-        ucg_int_t textWidth = display->ucg.getStrWidth(rightAction->text);
-        display->ucg.setPrintPos(DISPLAY_WIDTH - textWidth, DISPLAY_HEIGHT);
-        display->ucg.print(rightAction->text);
+        display->tft.drawRightString(rightAction->text, DISPLAY_WIDTH, DISPLAY_HEIGHT, 2);
     }
-    display->ucg.setFontPosBaseline();
 }
 
 void Page::render()
@@ -61,6 +55,7 @@ bool Page::processOpcode(const uint8_t& opcode)
 HomePage::HomePage(Display* display) : Page::Page(display)
 {
     leftAction = &controlAreaActions[0];
+    // rightAction = &controlAreaActions[1];
 }
 
 void HomePage::render()
@@ -76,18 +71,7 @@ void HomePage::render()
 
 void HomePage::drawHrState()
 {
-    if (hrEnabled)
-    {
-        display->setColorRGB(224, 43, 43);
-    }
-    else
-    {
-        display->setColorRGB(34, 174, 240);
-    }
-    display->ucg.drawDisc(DISPLAY_WIDTH / 2,
-                          (DISPLAY_HEIGHT - COMMAND_AREA_HEIGHT) / 2,
-                          12,
-                          UCG_DRAW_ALL);
+    display->tft.fillCircle(PAGE_MID_WIDTH, PAGE_MID_HEIGHT, 12, hrEnabled ? TFT_RED : TFT_BLUE);
 }
 
 bool HomePage::processOpcode(const uint8_t& opcode)

@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include <SPI.h>
-#include <Ucglib.h>
+#include <TFT_ILI9163.h>
 
 /*
   Hardware SPI Pins:
@@ -14,6 +14,8 @@
 
 #define DISPLAY_WIDTH 160
 #define DISPLAY_HEIGHT 128
+#define DISPLAY_MID_WIDTH 80
+#define DISPLAY_MID_HEIGHT 64
 
 class Display 
 {
@@ -22,13 +24,8 @@ private:
     void powerDown();
     void powerUp();
 public:
-    // Ucglib_ST7735_18x128x160_SWSPI ucg = Ucglib_ST7735_18x128x160_SWSPI(/*sclk=*/ 13, /*data=*/ 11, /*cd=*/ 5, /*cs=*/ 6, /*reset=*/ 4);
-    Ucglib_ST7735_18x128x160_HWSPI ucg = Ucglib_ST7735_18x128x160_HWSPI(/*cd=*/ 5, /*cs=*/ 6, /*reset=*/ 4);
+    TFT_ILI9163 tft = TFT_ILI9163();
     void init();
-    // The colors on my display are swapped, it interprets R as B and B as R, 
-    //  so I added helper methods here to account for that
-    void setColorRGB(uint8_t idx, uint8_t r, uint8_t g, uint8_t b);
-    void setColorRGB(uint8_t r, uint8_t g, uint8_t b);
 };
 
 #endif

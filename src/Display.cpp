@@ -3,10 +3,10 @@
 void Display::init()
 {
     initBacklight();
-    ucg.begin(UCG_FONT_MODE_SOLID);
-    ucg.clearScreen();
-    ucg.setRotate90();
-    ucg.setFont(ucg_font_courR12_mr);
+    tft.init();
+    tft.setRotation(3);
+    tft.fillScreen(TFT_BLACK);
+    tft.setTextDatum(BL_DATUM);
 }
 
 void Display::initBacklight()
@@ -18,22 +18,12 @@ void Display::initBacklight()
 void Display::powerDown()
 {
     digitalWrite(PIN_BACKLIGHT, LOW);
-    ucg.powerDown();
+    // TODO Implement Power Down in library
 }
 
 void Display::powerUp()
 {
-    ucg.powerUp();
+    // TODO Implement Power Up in library
     delay(200);
     digitalWrite(PIN_BACKLIGHT, HIGH);
-}
-
-void Display::setColorRGB(uint8_t idx, uint8_t r, uint8_t g, uint8_t b)
-{
-    ucg.setColor(idx, b, g, r);
-}
-
-void Display::setColorRGB(uint8_t r, uint8_t g, uint8_t b)
-{
-    ucg.setColor(b, g, r);
 }

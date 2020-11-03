@@ -10,7 +10,8 @@
                 "C:/Program Files (x86)/Arduino/libraries/**",
                 // "C:/Users/radus/Documents/Arduino/hardware/tools/**",
                 "C:/Users/radus/Documents/Arduino/libraries/**",
-                "C:/Program Files (x86)/Arduino/hardware/arduino/avr/libraries/SPI/src"
+                "C:/Program Files (x86)/Arduino/hardware/arduino/avr/libraries/SPI/src",
+                "C:/Users/radus/Documents/Arduino/libraries/TFT_ILI9163-master"
             ],
             "forcedInclude": [
                 "C:/Program Files (x86)/Arduino/hardware/arduino/avr/cores/arduino/Arduino.h"

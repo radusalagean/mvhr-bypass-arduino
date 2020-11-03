@@ -4,9 +4,12 @@
 #include "Display.h"
 #include "Opcode.h"
 
-#define FONT_HEIGHT 12
-#define FONT_DESCENT 3
-#define COMMAND_AREA_HEIGHT (FONT_HEIGHT + FONT_DESCENT + 1)
+#define FONT_HEIGHT 16
+#define COMMAND_AREA_HEIGHT 17
+#define PAGE_WIDTH DISPLAY_WIDTH
+#define PAGE_HEIGHT (DISPLAY_HEIGHT - COMMAND_AREA_HEIGHT)
+#define PAGE_MID_WIDTH (PAGE_WIDTH / 2)
+#define PAGE_MID_HEIGHT (PAGE_HEIGHT / 2)
 
 struct ControlAreaAction
 {
