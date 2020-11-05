@@ -4,6 +4,7 @@
 #include "Keypad.h"
 #include "Page.h"
 #include "UserJourney.h"
+#include "Relay.h"
 
 #include <MemoryFree.h>
 
@@ -28,7 +29,7 @@
  * D4 - Display (RESET)
  * D5 (PWM) - Display (CD - A0)
  * D6 (PWM) - Display (CS)
- * D7 -
+ * D7 - Relay
  * D8 - 
  * D9 (PWM) - Display Backlight
  * D10 (SPI SS, PWM) - SD Card - CS (Logging shield)
@@ -44,7 +45,8 @@
 Display display;
 ExternalStorage externalStorage;
 Keypad keypad;
-UserJourney userJourney = UserJourney(&display);
+Relay relay;
+UserJourney userJourney = UserJourney(&display, &relay);
 
 void setup(void)
 {
@@ -52,6 +54,7 @@ void setup(void)
     prepareInterrupts();
     // clock.init();
     display.init();
+    relay.init();
     externalStorage.init();
     userJourney.init();
 }

@@ -2,8 +2,8 @@
 
 ControlAreaAction controlAreaActions[] =
 {
-    { "HR on", OPCODE_HR_ON },
-    { "HR off", OPCODE_HR_OFF }
+    { "HR enable", OPCODE_HR_ON },
+    { "HR disable", OPCODE_HR_OFF }
 };
 
 /**
@@ -54,8 +54,7 @@ bool Page::processOpcode(const uint8_t& opcode)
 
 HomePage::HomePage(Display* display) : Page::Page(display)
 {
-    leftAction = &controlAreaActions[0];
-    // rightAction = &controlAreaActions[1];
+    leftAction = &controlAreaActions[1];
 }
 
 void HomePage::render()

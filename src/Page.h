@@ -37,7 +37,7 @@ public:
 class HomePage : public Page
 {
 private:
-    bool hrEnabled = false;
+    bool hrEnabled = true;
     void drawHrState();
 public:
     HomePage(Display* display);

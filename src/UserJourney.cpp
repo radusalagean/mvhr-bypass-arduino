@@ -1,8 +1,9 @@
 #include "UserJourney.h"
 
-UserJourney::UserJourney(Display* display)
+UserJourney::UserJourney(Display* display, Relay* relay)
 {
     this->display = display;
+    this->relay = relay;
 }
 
 void UserJourney::init()
@@ -18,12 +19,14 @@ void UserJourney::processKey(uint8_t &key)
         if (currentPage->leftAction != NULL)
         {
             currentPage->processControlAreaAction(*(currentPage->leftAction));
+            processOpcode(currentPage->leftAction->opcode);
         }
         break;
     case KEY_RIGHT:
         if (currentPage->rightAction != NULL)
         {
             currentPage->processControlAreaAction(*(currentPage->rightAction));
+            processOpcode(currentPage->rightAction->opcode);
         }
         break;
     case KEY_MINUS:
@@ -43,4 +46,19 @@ void UserJourney::processKey(uint8_t &key)
 void UserJourney::render()
 {
     currentPage->render();
+}
+
+void UserJourney::processOpcode(const uint8_t& opcode)
+{
+    switch (opcode)
+    {
+    case OPCODE_HR_ON:
+        relay->closeCircuit();
+        break;
+    case OPCODE_HR_OFF:
+        relay->openCircuit();
+        break;
+    default:
+        break;
+    }
 }
