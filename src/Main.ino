@@ -28,13 +28,13 @@
  * D4 - Display (RESET)
  * D5 (PWM) - Display (CD - A0)
  * D6 (PWM) - Display (CS)
- * D7 - Display (DATA - SCA)
- * D8 - Display (CLOCK - SCL)
+ * D7 -
+ * D8 - 
  * D9 (PWM) - Display Backlight
  * D10 (SPI SS, PWM) - SD Card - CS (Logging shield)
- * D11 (SPI MOSI, PWM) - SD Card  (Logging shield)
+ * D11 (SPI MOSI, PWM) - SD Card  (Logging shield) - and - Display (DATA - SCA)
  * D12 (SPI MISO) - SD Card (Logging shield)
- * D13 (SPI SCK) - SD Card (Logging shield)
+ * D13 (SPI SCK) - SD Card (Logging shield) - and - Display (CLOCK - SCL)
  * AREF -
  * SDA (I2C Data) -
  * SCL (I2C Clock) -
