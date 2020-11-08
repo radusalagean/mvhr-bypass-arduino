@@ -1,10 +1,11 @@
-#include "Clock.h"
-#include "Display.h"
-#include "ExternalStorage.h"
-#include "Keypad.h"
-#include "Page.h"
-#include "UserJourney.h"
-#include "Relay.h"
+#include "src/Clock.h"
+#include "src/Display.h"
+#include "src/ExternalStorage.h"
+#include "src/Keypad.h"
+#include "src/Page.h"
+#include "src/UserJourney.h"
+#include "src/Relay.h"
+// #include "src/Temperature.h"
 
 #include <MemoryFree.h>
 
@@ -24,7 +25,7 @@
  * A5 - RTC (Logging shield)
  * D0 (RX, UART out) -
  * D1 (TX, UART in) -
- * D2 (Interrup compatible) -
+ * D2 (Interrup compatible) - OneWire (Temperature sensors)
  * D3 (Interrup compatible, PWM) - Keypad interrupt
  * D4 - Display (RESET)
  * D5 (PWM) - Display (CD - A0)
@@ -46,6 +47,7 @@ Display display;
 ExternalStorage externalStorage;
 Keypad keypad;
 Relay relay;
+// Temperature temperature;
 UserJourney userJourney = UserJourney(&display, &relay);
 
 void setup(void)
@@ -56,6 +58,7 @@ void setup(void)
     display.init();
     relay.init();
     externalStorage.init();
+    // temperature.init();
     userJourney.init();
 }
 

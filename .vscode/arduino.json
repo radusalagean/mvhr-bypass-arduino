@@ -1,5 +1,5 @@
 {
-    "sketch": "src/Main.ino",
+    "sketch": "Main.ino",
     "board": "arduino:avr:uno",
     "output": "build",
     "port": "COM6"

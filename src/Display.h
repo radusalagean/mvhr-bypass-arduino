@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include <SPI.h>
-#include <TFT_ILI9163.h>
+#include "vendor/TFT_ILI9163/TFT_ILI9163.h"
 
 /*
   Hardware SPI Pins:
