@@ -3,54 +3,100 @@
 
 #include "Display.h"
 #include "Opcode.h"
+#include "Temperature.h"
 
 #define FONT_HEIGHT 16
-#define COMMAND_AREA_HEIGHT 17
+#define COMMAND_AREA_HEIGHT (FONT_HEIGHT + 1)
 #define PAGE_WIDTH DISPLAY_WIDTH
 #define PAGE_HEIGHT (DISPLAY_HEIGHT - COMMAND_AREA_HEIGHT)
 #define PAGE_MID_WIDTH (PAGE_WIDTH / 2)
 #define PAGE_MID_HEIGHT (PAGE_HEIGHT / 2)
 
-struct ControlAreaAction
+#define TABLE_ROWS 3
+#define TABLE_COLUMNS 3
+#define TABLE_CELL_WIDTH (PAGE_WIDTH / TABLE_COLUMNS)
+#define TABLE_CELL_HEIGHT (PAGE_HEIGHT / TABLE_ROWS)
+#define TABLE_CELL_WIDTH_HALF (TABLE_CELL_WIDTH / 2)
+#define TABLE_CELL_HEIGHT_HALF (TABLE_CELL_HEIGHT / 2)
+
+// TODO Split pages into separate source files
+
+/**
+ * 00 | 01 | 02
+ * 10 | 11 | 12
+ * 20 | 21 | 22
+ */
+
+struct Point2d
 {
-    char* text;
+    uint8_t x;
+    uint8_t y;
+};
+
+struct CommandAreaAction
+{
+    char *text;
     uint8_t opcode;
 };
 
 class Page
 {
 private:
-    
 protected:
-    Page(Display* display);
-    Display* display = NULL;
-    bool invalidated = true;
-    void drawControlArea();
+    Page(Display *display, Temperature *temperature);
+    Display *display = NULL;
+    Temperature *temperature = NULL;
+    byte invalidation = 0;
+    boolean initialized = false;
+    void drawCommandArea();
+
 public:
-    ControlAreaAction* leftAction = NULL;
-    ControlAreaAction* rightAction = NULL;
+    CommandAreaAction *leftAction = NULL;
+    CommandAreaAction *rightAction = NULL;
     virtual void render();
-    void processControlAreaAction(ControlAreaAction& action);
-    virtual bool processOpcode(const uint8_t& opcode);
+    virtual void refreshInvalidatedAreas();
+    void processCommandAreaAction(CommandAreaAction &action);
+    virtual bool processOpcode(const uint8_t &opcode);
+    virtual void handleCronJobs();
 };
+
+/**
+ * Invalidation flag bits:
+ * Bit 1: Command area
+ * Bit 2: Temp table cells
+ * Bit 3: HR State cell
+ */
+#define HOME_PAGE_INVALIDATION_COMMAND_AREA 0b0001
+#define HOME_PAGE_INVALIDATION_TEMP_TABLE_CELLS 0b0010
+#define HOME_PAGE_INVALIDATION_HR_STATE_CELL 0b0100
+
+#define HOME_PAGE_TEMP_REFRESH_INTERVAL 5000 // 5s
 
 class HomePage : public Page
 {
 private:
     bool hrEnabled = true;
+    Point2d cellOrigin[TABLE_ROWS][TABLE_COLUMNS] = {};
+    Point2d cellCenter[TABLE_ROWS][TABLE_COLUMNS] = {};
+    long lastTempRefresh = 0L;
+    void initTablePoints();
     void drawHrState();
+    void drawTempTable();
+    void drawTempValues();
+
 public:
-    HomePage(Display* display);
+    HomePage(Display *display, Temperature *temperature);
     void render();
-    bool processOpcode(const uint8_t& opcode);
+    void refreshInvalidatedAreas();
+    bool processOpcode(const uint8_t &opcode);
+    void invalidateTempTableCells();
+    void handleCronJobs();
 };
 
 class MenuPage : public Page
 {
 private:
-    
 public:
-
 };
 
 #endif

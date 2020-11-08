@@ -1,14 +1,15 @@
 #include "UserJourney.h"
 
-UserJourney::UserJourney(Display* display, Relay* relay)
+UserJourney::UserJourney(Display* display, Relay* relay, Temperature* temperature)
 {
     this->display = display;
     this->relay = relay;
+    this->temperature = temperature;
 }
 
 void UserJourney::init()
 {
-    currentPage = new HomePage(display);
+    currentPage = new HomePage(display, temperature);
 }
 
 void UserJourney::processKey(uint8_t &key)
@@ -18,14 +19,14 @@ void UserJourney::processKey(uint8_t &key)
     case KEY_LEFT:
         if (currentPage->leftAction != NULL)
         {
-            currentPage->processControlAreaAction(*(currentPage->leftAction));
+            currentPage->processCommandAreaAction(*(currentPage->leftAction));
             processOpcode(currentPage->leftAction->opcode);
         }
         break;
     case KEY_RIGHT:
         if (currentPage->rightAction != NULL)
         {
-            currentPage->processControlAreaAction(*(currentPage->rightAction));
+            currentPage->processCommandAreaAction(*(currentPage->rightAction));
             processOpcode(currentPage->rightAction->opcode);
         }
         break;
@@ -46,6 +47,7 @@ void UserJourney::processKey(uint8_t &key)
 void UserJourney::render()
 {
     currentPage->render();
+    currentPage->handleCronJobs();
 }
 
 void UserJourney::processOpcode(const uint8_t& opcode)

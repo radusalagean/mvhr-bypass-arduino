@@ -1,6 +1,6 @@
 #include "Page.h"
 
-ControlAreaAction controlAreaActions[] =
+CommandAreaAction commandAreaAction[] =
 {
     { "HR enable", OPCODE_HR_ON },
     { "HR disable", OPCODE_HR_OFF }
@@ -10,14 +10,16 @@ ControlAreaAction controlAreaActions[] =
  * BASE page
  **/
 
-Page::Page(Display* display)
+Page::Page(Display* display, Temperature* temperature)
 {
     Serial.println(F("Base page ctor called"));
     this->display = display;
+    this->temperature = temperature;
 }
 
-void Page::drawControlArea()
+void Page::drawCommandArea()
 {
+    display->tft.fillRect(0, DISPLAY_HEIGHT - COMMAND_AREA_HEIGHT + 1, DISPLAY_WIDTH, DISPLAY_HEIGHT, TFT_BLACK);
     display->tft.setTextColor(TFT_WHITE, TFT_BLACK);
     display->tft.drawLine(0, PAGE_HEIGHT,
         DISPLAY_WIDTH, PAGE_HEIGHT, TFT_WHITE);
@@ -36,7 +38,12 @@ void Page::render()
 
 }
 
-void Page::processControlAreaAction(ControlAreaAction& action)
+void Page::refreshInvalidatedAreas()
+{
+
+}
+
+void Page::processCommandAreaAction(CommandAreaAction& action)
 {
     processOpcode(action.opcode);
 }
@@ -48,29 +55,106 @@ bool Page::processOpcode(const uint8_t& opcode)
     return false;
 }
 
+void Page::handleCronJobs()
+{
+
+}
+
 /**
  * HOME page
  **/
 
-HomePage::HomePage(Display* display) : Page::Page(display)
+HomePage::HomePage(Display* display, Temperature* temperature) : Page::Page(display, temperature)
 {
-    leftAction = &controlAreaActions[1];
+    leftAction = &commandAreaAction[1];
+    initTablePoints();
+}
+
+void HomePage::initTablePoints()
+{
+    for (uint8_t row = 0; row < TABLE_ROWS; row++)
+    {
+        for (uint8_t col = 0; col < TABLE_COLUMNS; col++)
+        {
+            cellOrigin[row][col] = { 
+                col * TABLE_CELL_WIDTH, 
+                row * TABLE_CELL_HEIGHT 
+            };
+            cellCenter[row][col] = { 
+                cellOrigin[row][col].x + TABLE_CELL_WIDTH_HALF, 
+                cellOrigin[row][col].y + TABLE_CELL_HEIGHT_HALF 
+            };
+        }
+    }
 }
 
 void HomePage::render()
 {
-    if (!invalidated)
+    if (initialized)
     {
+        if (invalidation != 0)
+            refreshInvalidatedAreas();
         return;
     }
-    drawControlArea();
+    drawCommandArea();
+    drawTempTable();
     drawHrState();
-    invalidated = false;
+    drawTempValues();
+    initialized = true;
+}
+
+void HomePage::refreshInvalidatedAreas()
+{
+    if ((invalidation & HOME_PAGE_INVALIDATION_COMMAND_AREA) != 0)
+        drawCommandArea();
+    if ((invalidation & HOME_PAGE_INVALIDATION_TEMP_TABLE_CELLS) != 0)
+        drawTempValues();
+    if ((invalidation & HOME_PAGE_INVALIDATION_HR_STATE_CELL) != 0)
+        drawHrState();
+    invalidation = 0;
 }
 
 void HomePage::drawHrState()
 {
-    display->tft.fillCircle(PAGE_MID_WIDTH, PAGE_MID_HEIGHT, 12, hrEnabled ? TFT_RED : TFT_BLUE);
+    display->tft.fillCircle(cellCenter[0][0].x, cellCenter[0][0].y, 12, hrEnabled ? TFT_RED : TFT_BLUE);
+}
+
+void HomePage::drawTempTable()
+{
+    // Draw row separators
+    for (uint8_t row = 1; row < TABLE_ROWS; row++)
+    {
+        display->tft.drawLine(0, cellOrigin[row][0].y,
+            PAGE_WIDTH, cellOrigin[row][0].y, TFT_WHITE);
+    }
+
+    // Draw column separators
+    for (uint8_t col = 1; col < TABLE_COLUMNS; col++)
+    {
+        display->tft.drawLine(cellOrigin[0][col].x, 0,
+            cellOrigin[0][col].x, PAGE_HEIGHT, TFT_WHITE);
+    }
+
+    // Labels
+    display->tft.drawStringWithDatum("AD", cellCenter[1][0].x, cellCenter[1][0].y, 2, CC_DATUM);
+    display->tft.drawStringWithDatum("EV", cellCenter[2][0].x, cellCenter[2][0].y, 2, CC_DATUM);
+    display->tft.drawStringWithDatum("EXT", cellCenter[0][1].x, cellCenter[0][1].y, 2, CC_DATUM);
+    display->tft.drawStringWithDatum("INT", cellCenter[0][2].x, cellCenter[0][2].y, 2, CC_DATUM);
+}
+
+void HomePage::drawTempValues() // TODO Handle temp read error
+{
+    temperature->requestTemperatures();
+
+    display->tft.fillRectExclusive(cellOrigin[1][1].x, cellOrigin[1][1].y, TABLE_CELL_WIDTH, TABLE_CELL_HEIGHT, TFT_BLACK);
+    display->tft.fillRectExclusive(cellOrigin[1][2].x, cellOrigin[1][2].y, TABLE_CELL_WIDTH, TABLE_CELL_HEIGHT, TFT_BLACK);
+    display->tft.fillRectExclusive(cellOrigin[2][1].x, cellOrigin[2][1].y, TABLE_CELL_WIDTH, TABLE_CELL_HEIGHT, TFT_BLACK);
+    display->tft.fillRectExclusive(cellOrigin[2][2].x, cellOrigin[2][2].y, TABLE_CELL_WIDTH, TABLE_CELL_HEIGHT, TFT_BLACK);
+
+    display->tft.drawFloatWithDatum(temperature->getTempExtAd(), 1, cellCenter[1][1].x, cellCenter[1][1].y, 4, CC_DATUM);
+    display->tft.drawFloatWithDatum(temperature->getTempExtEv(), 1, cellCenter[2][1].x, cellCenter[2][1].y, 4, CC_DATUM);
+    display->tft.drawFloatWithDatum(temperature->getTempIntAd(), 1, cellCenter[1][2].x, cellCenter[1][2].y, 4, CC_DATUM);
+    display->tft.drawFloatWithDatum(temperature->getTempIntEv(), 1, cellCenter[2][2].x, cellCenter[2][2].y, 4, CC_DATUM);
 }
 
 bool HomePage::processOpcode(const uint8_t& opcode)
@@ -84,16 +168,26 @@ bool HomePage::processOpcode(const uint8_t& opcode)
     {
     case OPCODE_HR_ON:
         hrEnabled = true;
-        leftAction = &controlAreaActions[1];
-        invalidated = true;
+        leftAction = &commandAreaAction[1];
+        invalidation |= (HOME_PAGE_INVALIDATION_COMMAND_AREA | HOME_PAGE_INVALIDATION_HR_STATE_CELL);
         break;
     case OPCODE_HR_OFF:
         hrEnabled = false;
-        leftAction = &controlAreaActions[0];
-        invalidated = true;
+        leftAction = &commandAreaAction[0];
+        invalidation |= (HOME_PAGE_INVALIDATION_COMMAND_AREA | HOME_PAGE_INVALIDATION_HR_STATE_CELL);
         break;
     default:
         break;
     }
     return true;
+}
+
+void HomePage::handleCronJobs()
+{
+    // Temp Cells Refresh
+    if (millis() - lastTempRefresh > HOME_PAGE_TEMP_REFRESH_INTERVAL)
+    {
+        invalidation |= HOME_PAGE_INVALIDATION_TEMP_TABLE_CELLS;
+        lastTempRefresh = millis();
+    }
 }

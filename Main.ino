@@ -5,7 +5,7 @@
 #include "src/Page.h"
 #include "src/UserJourney.h"
 #include "src/Relay.h"
-// #include "src/Temperature.h"
+#include "src/Temperature.h"
 
 #include <MemoryFree.h>
 
@@ -47,8 +47,8 @@ Display display;
 ExternalStorage externalStorage;
 Keypad keypad;
 Relay relay;
-// Temperature temperature;
-UserJourney userJourney = UserJourney(&display, &relay);
+Temperature temperature;
+UserJourney userJourney = UserJourney(&display, &relay, &temperature);
 
 void setup(void)
 {
@@ -58,7 +58,7 @@ void setup(void)
     display.init();
     relay.init();
     externalStorage.init();
-    // temperature.init();
+    temperature.init();
     userJourney.init();
 }
 
