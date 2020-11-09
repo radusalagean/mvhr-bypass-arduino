@@ -19,8 +19,6 @@
 #define TABLE_CELL_WIDTH_HALF (TABLE_CELL_WIDTH / 2)
 #define TABLE_CELL_HEIGHT_HALF (TABLE_CELL_HEIGHT / 2)
 
-// TODO Split pages into separate source files
-
 /**
  * 00 | 01 | 02
  * 10 | 11 | 12
