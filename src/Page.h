@@ -64,7 +64,6 @@ public:
     virtual void refreshInvalidatedAreas();
     void processCommandAreaAction(CommandAreaAction& action);
     virtual bool processOpcode(const uint8_t& opcode);
-    virtual void handleCronJobs();
 };
 
 /**
@@ -77,14 +76,13 @@ public:
 #define HOME_PAGE_INVALIDATION_TEMP_TABLE_CELLS 0b0010
 #define HOME_PAGE_INVALIDATION_HR_STATE_CELL 0b0100
 
-#define HOME_PAGE_TEMP_REFRESH_INTERVAL 5000 // 5s
+
 
 class HomePage : public Page
 {
 private:
     Point2d cellOrigin[TABLE_ROWS][TABLE_COLUMNS] = {};
     Point2d cellCenter[TABLE_ROWS][TABLE_COLUMNS] = {};
-    long lastTempRefresh = 0L;
     void initTablePoints();
     void drawHrState();
     void drawTempTable();
@@ -97,7 +95,6 @@ public:
     void refreshInvalidatedAreas();
     bool processOpcode(const uint8_t& opcode);
     void invalidateTempTableCells();
-    void handleCronJobs();
 };
 
 class MenuPage : public Page

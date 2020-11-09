@@ -50,10 +50,9 @@ void UserJourney::processKey(uint8_t& key)
     }
 }
 
-void UserJourney::render()
+void UserJourney::renderCurrentPage()
 {
     currentPage->render();
-    currentPage->handleCronJobs();
 }
 
 void UserJourney::processOpcode(const uint8_t& opcode)
@@ -68,6 +67,9 @@ void UserJourney::processOpcode(const uint8_t& opcode)
         break;
     case OPCODE_SWITCH_MODE:
         state->hrModeAuto = !state->hrModeAuto;
+        break;
+    case OPCODE_REFRESH_TEMP_VALUES_ON_SCREEN:
+        currentPage->processOpcode(OPCODE_REFRESH_TEMP_VALUES_ON_SCREEN);
         break;
     default:
         break;

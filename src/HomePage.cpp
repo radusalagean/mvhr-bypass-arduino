@@ -109,20 +109,13 @@ bool HomePage::processOpcode(const uint8_t& opcode)
     case OPCODE_SWITCH_MODE:
         invalidation |= HOME_PAGE_INVALIDATION_HR_STATE_CELL;
         break;
+    case OPCODE_REFRESH_TEMP_VALUES_ON_SCREEN:
+        invalidation |= HOME_PAGE_INVALIDATION_TEMP_TABLE_CELLS;
+        break;
     default:
         break;
     }
     return true;
-}
-
-void HomePage::handleCronJobs()
-{
-    // Temp Cells Refresh
-    if (millis() - lastTempRefresh > HOME_PAGE_TEMP_REFRESH_INTERVAL)
-    {
-        invalidation |= HOME_PAGE_INVALIDATION_TEMP_TABLE_CELLS;
-        lastTempRefresh = millis();
-    }
 }
 
 void HomePage::clearCell(uint8_t count, ...)

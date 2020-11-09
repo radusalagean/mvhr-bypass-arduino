@@ -8,5 +8,6 @@
 #define OPCODE_HR_ON 5
 #define OPCODE_HR_OFF 6
 #define OPCODE_SWITCH_MODE 7
+#define OPCODE_REFRESH_TEMP_VALUES_ON_SCREEN 8
 
 #endif

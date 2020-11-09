@@ -16,13 +16,13 @@ private:
     Relay* relay = NULL;
     Temperature* temperature = NULL;
     State* state = NULL;
-    void processOpcode(const uint8_t& opcode);
 
 public:
     UserJourney(Display* display, Relay* relay, Temperature* temperature, State* state);
     void init();
     void processKey(uint8_t& key);
-    void render();
+    void renderCurrentPage();
+    void processOpcode(const uint8_t& opcode);
 };
 
 #endif

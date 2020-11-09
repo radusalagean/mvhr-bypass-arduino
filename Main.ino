@@ -7,6 +7,7 @@
 #include "src/Relay.h"
 #include "src/Temperature.h"
 #include "src/State.h"
+#include "src/Daemon.h"
 
 #include <MemoryFree.h>
 
@@ -51,6 +52,7 @@ Temperature temperature;
 State state;
 Relay relay = Relay(&state);
 UserJourney userJourney = UserJourney(&display, &relay, &temperature, &state);
+Daemon daemon = Daemon(&state, &temperature, &userJourney);
 
 void setup(void)
 {
@@ -66,14 +68,14 @@ void setup(void)
 
 void loop(void)
 {
-    temperature.requestTemperatures();
+    daemon.handleOutstandingJobs();
     uint8_t keyToProcess = keypad.getKeyToProcess();
     if (keyToProcess != KEY_NONE)
     {
         userJourney.processKey(keyToProcess);
         keypad.markAsProcessed();
     }
-    userJourney.render();
+    userJourney.renderCurrentPage();
     // externalStorage.printStorageInfo();
 }
 

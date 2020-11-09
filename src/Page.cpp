@@ -47,6 +47,3 @@ bool Page::processOpcode(const uint8_t& opcode)
     return false;
 }
 
-void Page::handleCronJobs()
-{
-}
