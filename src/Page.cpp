@@ -16,7 +16,7 @@ void Page::drawCommandArea()
 {
     display->tft.fillRect(0, DISPLAY_HEIGHT - COMMAND_AREA_HEIGHT + 1, DISPLAY_WIDTH, DISPLAY_HEIGHT, TFT_BLACK);
     display->tft.drawLine(0, PAGE_HEIGHT,
-        DISPLAY_WIDTH, PAGE_HEIGHT, TFT_WHITE);
+                          DISPLAY_WIDTH, PAGE_HEIGHT, TFT_WHITE);
     if (leftAction != NULL)
     {
         display->tft.drawString(leftAction->text, 0, DISPLAY_HEIGHT, 2);
@@ -29,12 +29,10 @@ void Page::drawCommandArea()
 
 void Page::render()
 {
-
 }
 
 void Page::refreshInvalidatedAreas()
 {
-
 }
 
 void Page::processCommandAreaAction(CommandAreaAction& action)
@@ -51,5 +49,4 @@ bool Page::processOpcode(const uint8_t& opcode)
 
 void Page::handleCronJobs()
 {
-
 }

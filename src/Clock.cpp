@@ -1,8 +1,8 @@
 #include "Clock.h"
 
-void Clock::init() 
+void Clock::init()
 {
-    if (!rtc.begin()) 
+    if (!rtc.begin())
     {
         // RTC Chip not found
         Serial.println(F("Unable to find RTC"));

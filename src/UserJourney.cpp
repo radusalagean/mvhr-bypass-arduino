@@ -13,7 +13,7 @@ void UserJourney::init()
     currentPage = new HomePage(display, temperature, state);
 }
 
-void UserJourney::processKey(uint8_t &key)
+void UserJourney::processKey(uint8_t& key)
 {
     switch (key)
     {

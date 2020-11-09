@@ -27,6 +27,7 @@ class Keypad
 private:
     volatile uint8_t keyToProcess;
     volatile unsigned long lastProcessTime;
+
 public:
     void onInterrupt();
     uint8_t getKeyToProcess();

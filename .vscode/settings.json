@@ -1,4 +1,4 @@
 {
     "C_Cpp.intelliSenseEngine": "Tag Parser",
-    "C_Cpp.clang_format_fallbackStyle": "{ PointerAlignment: Left}"
+    "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: LLVM, PointerAlignment: Left, UseTab: Never, IndentWidth: 4, TabWidth: 4, BreakBeforeBraces: Allman, AllowShortIfStatementsOnASingleLine: false, IndentCaseLabels: false, ColumnLimit: 0, AccessModifierOffset: -4 }"
 }

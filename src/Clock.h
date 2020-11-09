@@ -8,6 +8,7 @@ class Clock
 {
 private:
     RTC_DS1307 rtc;
+
 public:
     void init();
     DateTime now();

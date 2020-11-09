@@ -1,12 +1,12 @@
 #ifndef USER_JOURNEY_H
 #define USER_JOURNEY_H
 
-#include "Page.h"
-#include "Keypad.h"
 #include "Display.h"
+#include "Keypad.h"
+#include "Page.h"
 #include "Relay.h"
-#include "Temperature.h"
 #include "State.h"
+#include "Temperature.h"
 
 class UserJourney
 {
@@ -17,6 +17,7 @@ private:
     Temperature* temperature = NULL;
     State* state = NULL;
     void processOpcode(const uint8_t& opcode);
+
 public:
     UserJourney(Display* display, Relay* relay, Temperature* temperature, State* state);
     void init();

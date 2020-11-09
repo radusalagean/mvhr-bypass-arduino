@@ -3,8 +3,8 @@
 
 #include "Display.h"
 #include "Opcode.h"
-#include "Temperature.h"
 #include "State.h"
+#include "Temperature.h"
 #include <stdarg.h>
 
 #define FONT_HEIGHT 16
@@ -41,7 +41,7 @@ struct Cell
 
 struct CommandAreaAction
 {
-    char *text;
+    char* text;
     uint8_t opcode;
 };
 
@@ -49,21 +49,21 @@ class Page
 {
 private:
 protected:
-    Page(Display *display, Temperature *temperature, State* state);
-    Display *display = NULL;
-    Temperature *temperature = NULL;
+    Page(Display* display, Temperature* temperature, State* state);
+    Display* display = NULL;
+    Temperature* temperature = NULL;
     State* state = NULL;
     byte invalidation = 0;
     boolean initialized = false;
     void drawCommandArea();
 
 public:
-    CommandAreaAction *leftAction = NULL;
-    CommandAreaAction *rightAction = NULL;
+    CommandAreaAction* leftAction = NULL;
+    CommandAreaAction* rightAction = NULL;
     virtual void render();
     virtual void refreshInvalidatedAreas();
-    void processCommandAreaAction(CommandAreaAction &action);
-    virtual bool processOpcode(const uint8_t &opcode);
+    void processCommandAreaAction(CommandAreaAction& action);
+    virtual bool processOpcode(const uint8_t& opcode);
     virtual void handleCronJobs();
 };
 
@@ -92,10 +92,10 @@ private:
     void clearCell(uint8_t count, ...);
 
 public:
-    HomePage(Display *display, Temperature *temperature, State* state);
+    HomePage(Display* display, Temperature* temperature, State* state);
     void render();
     void refreshInvalidatedAreas();
-    bool processOpcode(const uint8_t &opcode);
+    bool processOpcode(const uint8_t& opcode);
     void invalidateTempTableCells();
     void handleCronJobs();
 };

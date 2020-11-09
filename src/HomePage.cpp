@@ -4,7 +4,7 @@
  * HOME page
  **/
 
-const CommandAreaAction switchModeAction = { "Switch mode", OPCODE_SWITCH_MODE };
+const CommandAreaAction switchModeAction = {"Switch mode", OPCODE_SWITCH_MODE};
 
 HomePage::HomePage(Display* display, Temperature* temperature, State* state) : Page::Page(display, temperature, state)
 {
@@ -18,14 +18,12 @@ void HomePage::initTablePoints()
     {
         for (uint8_t col = 0; col < TABLE_COLUMNS; col++)
         {
-            cellOrigin[row][col] = { 
-                col * TABLE_CELL_WIDTH, 
-                row * TABLE_CELL_HEIGHT 
-            };
-            cellCenter[row][col] = { 
-                cellOrigin[row][col].x + TABLE_CELL_WIDTH_HALF, 
-                cellOrigin[row][col].y + TABLE_CELL_HEIGHT_HALF 
-            };
+            cellOrigin[row][col] = {
+                col * TABLE_CELL_WIDTH,
+                row * TABLE_CELL_HEIGHT};
+            cellCenter[row][col] = {
+                cellOrigin[row][col].x + TABLE_CELL_WIDTH_HALF,
+                cellOrigin[row][col].y + TABLE_CELL_HEIGHT_HALF};
         }
     }
 }
@@ -58,10 +56,10 @@ void HomePage::refreshInvalidatedAreas()
 
 void HomePage::drawHrState()
 {
-    display->tft.fillRect(cellOrigin[0][0].x, cellOrigin[0][0].y, 
-            TABLE_CELL_WIDTH, TABLE_CELL_HEIGHT, state->hrDisabled ? TFT_BLUE : TFT_RED);
-    display->tft.drawStringWithDatum(state->hrModeAuto ? "auto" : "manual", 
-        cellCenter[0][0].x, cellCenter[0][0].y, 2, CC_DATUM);
+    display->tft.fillRect(cellOrigin[0][0].x, cellOrigin[0][0].y,
+                          TABLE_CELL_WIDTH, TABLE_CELL_HEIGHT, state->hrDisabled ? TFT_BLUE : TFT_RED);
+    display->tft.drawStringWithDatum(state->hrModeAuto ? "auto" : "manual",
+                                     cellCenter[0][0].x, cellCenter[0][0].y, 2, CC_DATUM);
 }
 
 void HomePage::drawTempTable()
@@ -70,14 +68,14 @@ void HomePage::drawTempTable()
     for (uint8_t row = 1; row < TABLE_ROWS; row++)
     {
         display->tft.drawLine(0, cellOrigin[row][0].y,
-            PAGE_WIDTH, cellOrigin[row][0].y, TFT_WHITE);
+                              PAGE_WIDTH, cellOrigin[row][0].y, TFT_WHITE);
     }
 
     // Draw column separators
     for (uint8_t col = 1; col < TABLE_COLUMNS; col++)
     {
         display->tft.drawLine(cellOrigin[0][col].x, 0,
-            cellOrigin[0][col].x, PAGE_HEIGHT, TFT_WHITE);
+                              cellOrigin[0][col].x, PAGE_HEIGHT, TFT_WHITE);
     }
 
     // Labels
@@ -89,7 +87,7 @@ void HomePage::drawTempTable()
 
 void HomePage::drawTempValues() // TODO Handle temp read error
 {
-    clearCell(4, Cell {1, 1}, Cell {1, 2}, Cell {2, 1}, Cell {2, 2});
+    clearCell(4, Cell{1, 1}, Cell{1, 2}, Cell{2, 1}, Cell{2, 2});
 
     display->tft.drawFloatWithDatum(temperature->getTempExtAd(), 1, cellCenter[1][1].x, cellCenter[1][1].y, 4, CC_DATUM);
     display->tft.drawFloatWithDatum(temperature->getTempExtEv(), 1, cellCenter[2][1].x, cellCenter[2][1].y, 4, CC_DATUM);
@@ -134,8 +132,8 @@ void HomePage::clearCell(uint8_t count, ...)
     for (int i = 0; i < count; i++)
     {
         Cell cell = va_arg(args, Cell);
-        display->tft.fillRectExclusive(cellOrigin[cell.row][cell.col].x, cellOrigin[cell.row][cell.col].y, 
-            TABLE_CELL_WIDTH, TABLE_CELL_HEIGHT, TFT_BLACK);
+        display->tft.fillRectExclusive(cellOrigin[cell.row][cell.col].x, cellOrigin[cell.row][cell.col].y,
+                                       TABLE_CELL_WIDTH, TABLE_CELL_HEIGHT, TFT_BLACK);
     }
     va_end(args);
 }
