@@ -6,7 +6,7 @@ const KeySpec keySpecs[5] =
     { 776, 931, KEY_RIGHT },
     { 664, 775, KEY_MINUS },
     { 581, 663, KEY_PLUS },
-    { 509, 580, KEY_HOME }
+    { 509, 580, KEY_SPECIAL }
 };
 
 void Keypad::onInterrupt()

@@ -11,7 +11,7 @@
 #define KEY_RIGHT 2
 #define KEY_MINUS 3
 #define KEY_PLUS 4
-#define KEY_HOME 5
+#define KEY_SPECIAL 5
 
 #define PROCESS_DELAY_MS 500
 

@@ -4,6 +4,8 @@
 #include "Display.h"
 #include "Opcode.h"
 #include "Temperature.h"
+#include "State.h"
+#include <stdarg.h>
 
 #define FONT_HEIGHT 16
 #define COMMAND_AREA_HEIGHT (FONT_HEIGHT + 1)
@@ -31,6 +33,12 @@ struct Point2d
     uint8_t y;
 };
 
+struct Cell
+{
+    uint8_t row;
+    uint8_t col;
+};
+
 struct CommandAreaAction
 {
     char *text;
@@ -41,9 +49,10 @@ class Page
 {
 private:
 protected:
-    Page(Display *display, Temperature *temperature);
+    Page(Display *display, Temperature *temperature, State* state);
     Display *display = NULL;
     Temperature *temperature = NULL;
+    State* state = NULL;
     byte invalidation = 0;
     boolean initialized = false;
     void drawCommandArea();
@@ -73,7 +82,6 @@ public:
 class HomePage : public Page
 {
 private:
-    bool hrEnabled = true;
     Point2d cellOrigin[TABLE_ROWS][TABLE_COLUMNS] = {};
     Point2d cellCenter[TABLE_ROWS][TABLE_COLUMNS] = {};
     long lastTempRefresh = 0L;
@@ -81,9 +89,10 @@ private:
     void drawHrState();
     void drawTempTable();
     void drawTempValues();
+    void clearCell(uint8_t count, ...);
 
 public:
-    HomePage(Display *display, Temperature *temperature);
+    HomePage(Display *display, Temperature *temperature, State* state);
     void render();
     void refreshInvalidatedAreas();
     bool processOpcode(const uint8_t &opcode);

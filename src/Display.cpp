@@ -7,6 +7,7 @@ void Display::init()
     tft.setRotation(3);
     tft.fillScreen(TFT_BLACK);
     tft.setTextDatum(BL_DATUM);
+    tft.setTextColor(TFT_WHITE);
 }
 
 void Display::initBacklight()

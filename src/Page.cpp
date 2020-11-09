@@ -4,17 +4,17 @@
  * BASE page
  **/
 
-Page::Page(Display* display, Temperature* temperature)
+Page::Page(Display* display, Temperature* temperature, State* state)
 {
     Serial.println(F("Base page ctor called"));
     this->display = display;
     this->temperature = temperature;
+    this->state = state;
 }
 
 void Page::drawCommandArea()
 {
     display->tft.fillRect(0, DISPLAY_HEIGHT - COMMAND_AREA_HEIGHT + 1, DISPLAY_WIDTH, DISPLAY_HEIGHT, TFT_BLACK);
-    display->tft.setTextColor(TFT_WHITE, TFT_BLACK);
     display->tft.drawLine(0, PAGE_HEIGHT,
         DISPLAY_WIDTH, PAGE_HEIGHT, TFT_WHITE);
     if (leftAction != NULL)

@@ -4,12 +4,11 @@
  * HOME page
  **/
 
-const CommandAreaAction hrEnableAction = { "HR enable", OPCODE_HR_ON };
-const CommandAreaAction hrDisableAction = { "HR disable", OPCODE_HR_OFF };
+const CommandAreaAction switchModeAction = { "Switch mode", OPCODE_SWITCH_MODE };
 
-HomePage::HomePage(Display* display, Temperature* temperature) : Page::Page(display, temperature)
+HomePage::HomePage(Display* display, Temperature* temperature, State* state) : Page::Page(display, temperature, state)
 {
-    leftAction = &hrDisableAction;
+    leftAction = &switchModeAction;
     initTablePoints();
 }
 
@@ -59,7 +58,10 @@ void HomePage::refreshInvalidatedAreas()
 
 void HomePage::drawHrState()
 {
-    display->tft.fillCircle(cellCenter[0][0].x, cellCenter[0][0].y, 12, hrEnabled ? TFT_RED : TFT_BLUE);
+    display->tft.fillRect(cellOrigin[0][0].x, cellOrigin[0][0].y, 
+            TABLE_CELL_WIDTH, TABLE_CELL_HEIGHT, state->hrDisabled ? TFT_BLUE : TFT_RED);
+    display->tft.drawStringWithDatum(state->hrModeAuto ? "auto" : "manual", 
+        cellCenter[0][0].x, cellCenter[0][0].y, 2, CC_DATUM);
 }
 
 void HomePage::drawTempTable()
@@ -87,12 +89,7 @@ void HomePage::drawTempTable()
 
 void HomePage::drawTempValues() // TODO Handle temp read error
 {
-    temperature->requestTemperatures();
-
-    display->tft.fillRectExclusive(cellOrigin[1][1].x, cellOrigin[1][1].y, TABLE_CELL_WIDTH, TABLE_CELL_HEIGHT, TFT_BLACK);
-    display->tft.fillRectExclusive(cellOrigin[1][2].x, cellOrigin[1][2].y, TABLE_CELL_WIDTH, TABLE_CELL_HEIGHT, TFT_BLACK);
-    display->tft.fillRectExclusive(cellOrigin[2][1].x, cellOrigin[2][1].y, TABLE_CELL_WIDTH, TABLE_CELL_HEIGHT, TFT_BLACK);
-    display->tft.fillRectExclusive(cellOrigin[2][2].x, cellOrigin[2][2].y, TABLE_CELL_WIDTH, TABLE_CELL_HEIGHT, TFT_BLACK);
+    clearCell(4, Cell {1, 1}, Cell {1, 2}, Cell {2, 1}, Cell {2, 2});
 
     display->tft.drawFloatWithDatum(temperature->getTempExtAd(), 1, cellCenter[1][1].x, cellCenter[1][1].y, 4, CC_DATUM);
     display->tft.drawFloatWithDatum(temperature->getTempExtEv(), 1, cellCenter[2][1].x, cellCenter[2][1].y, 4, CC_DATUM);
@@ -110,14 +107,9 @@ bool HomePage::processOpcode(const uint8_t& opcode)
     switch (opcode)
     {
     case OPCODE_HR_ON:
-        hrEnabled = true;
-        leftAction = &hrDisableAction;
-        invalidation |= (HOME_PAGE_INVALIDATION_COMMAND_AREA | HOME_PAGE_INVALIDATION_HR_STATE_CELL);
-        break;
     case OPCODE_HR_OFF:
-        hrEnabled = false;
-        leftAction = &hrEnableAction;
-        invalidation |= (HOME_PAGE_INVALIDATION_COMMAND_AREA | HOME_PAGE_INVALIDATION_HR_STATE_CELL);
+    case OPCODE_SWITCH_MODE:
+        invalidation |= HOME_PAGE_INVALIDATION_HR_STATE_CELL;
         break;
     default:
         break;
@@ -133,4 +125,17 @@ void HomePage::handleCronJobs()
         invalidation |= HOME_PAGE_INVALIDATION_TEMP_TABLE_CELLS;
         lastTempRefresh = millis();
     }
+}
+
+void HomePage::clearCell(uint8_t count, ...)
+{
+    va_list args;
+    va_start(args, count);
+    for (int i = 0; i < count; i++)
+    {
+        Cell cell = va_arg(args, Cell);
+        display->tft.fillRectExclusive(cellOrigin[cell.row][cell.col].x, cellOrigin[cell.row][cell.col].y, 
+            TABLE_CELL_WIDTH, TABLE_CELL_HEIGHT, TFT_BLACK);
+    }
+    va_end(args);
 }

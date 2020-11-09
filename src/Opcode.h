@@ -7,5 +7,6 @@
 #define OPCODE_OPEN_MENU 4
 #define OPCODE_HR_ON 5
 #define OPCODE_HR_OFF 6
+#define OPCODE_SWITCH_MODE 7
 
 #endif

@@ -6,6 +6,7 @@
 #include "Display.h"
 #include "Relay.h"
 #include "Temperature.h"
+#include "State.h"
 
 class UserJourney
 {
@@ -14,9 +15,10 @@ private:
     Display* display = NULL;
     Relay* relay = NULL;
     Temperature* temperature = NULL;
+    State* state = NULL;
     void processOpcode(const uint8_t& opcode);
 public:
-    UserJourney(Display* display, Relay* relay, Temperature* temperature);
+    UserJourney(Display* display, Relay* relay, Temperature* temperature, State* state);
     void init();
     void processKey(uint8_t& key);
     void render();

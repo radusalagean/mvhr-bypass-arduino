@@ -6,6 +6,7 @@
 #include "src/UserJourney.h"
 #include "src/Relay.h"
 #include "src/Temperature.h"
+#include "src/State.h"
 
 #include <MemoryFree.h>
 
@@ -46,9 +47,10 @@
 Display display;
 ExternalStorage externalStorage;
 Keypad keypad;
-Relay relay;
 Temperature temperature;
-UserJourney userJourney = UserJourney(&display, &relay, &temperature);
+State state;
+Relay relay = Relay(&state);
+UserJourney userJourney = UserJourney(&display, &relay, &temperature, &state);
 
 void setup(void)
 {
@@ -64,6 +66,7 @@ void setup(void)
 
 void loop(void)
 {
+    temperature.requestTemperatures();
     uint8_t keyToProcess = keypad.getKeyToProcess();
     if (keyToProcess != KEY_NONE)
     {

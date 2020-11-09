@@ -1,15 +1,16 @@
 #include "UserJourney.h"
 
-UserJourney::UserJourney(Display* display, Relay* relay, Temperature* temperature)
+UserJourney::UserJourney(Display* display, Relay* relay, Temperature* temperature, State* state)
 {
     this->display = display;
     this->relay = relay;
     this->temperature = temperature;
+    this->state = state;
 }
 
 void UserJourney::init()
 {
-    currentPage = new HomePage(display, temperature);
+    currentPage = new HomePage(display, temperature, state);
 }
 
 void UserJourney::processKey(uint8_t &key)
@@ -19,15 +20,15 @@ void UserJourney::processKey(uint8_t &key)
     case KEY_LEFT:
         if (currentPage->leftAction != NULL)
         {
-            currentPage->processCommandAreaAction(*(currentPage->leftAction));
             processOpcode(currentPage->leftAction->opcode);
+            currentPage->processCommandAreaAction(*(currentPage->leftAction));
         }
         break;
     case KEY_RIGHT:
         if (currentPage->rightAction != NULL)
         {
-            currentPage->processCommandAreaAction(*(currentPage->rightAction));
             processOpcode(currentPage->rightAction->opcode);
+            currentPage->processCommandAreaAction(*(currentPage->rightAction));
         }
         break;
     case KEY_MINUS:
@@ -36,8 +37,13 @@ void UserJourney::processKey(uint8_t &key)
     case KEY_PLUS:
 
         break;
-    case KEY_HOME:
-
+    case KEY_SPECIAL:
+        if (!state->hrModeAuto) // TODO Move in separate method
+        {
+            uint8_t opcode = state->hrDisabled ? OPCODE_HR_OFF : OPCODE_HR_ON;
+            processOpcode(opcode);
+            currentPage->processOpcode(opcode);
+        }
         break;
     default:
         break;
@@ -59,6 +65,9 @@ void UserJourney::processOpcode(const uint8_t& opcode)
         break;
     case OPCODE_HR_OFF:
         relay->openCircuit();
+        break;
+    case OPCODE_SWITCH_MODE:
+        state->hrModeAuto = !state->hrModeAuto;
         break;
     default:
         break;
