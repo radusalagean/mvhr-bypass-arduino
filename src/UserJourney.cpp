@@ -30,10 +30,10 @@ void UserJourney::processKey(uint8_t& key)
         }
         break;
     case KEY_MINUS:
-
+        currentPage->processOpcode(OPCODE_CONTEXTUAL_MINUS);
         break;
     case KEY_PLUS:
-
+        currentPage->processOpcode(OPCODE_CONTEXTUAL_PLUS);
         break;
     case KEY_SPECIAL:
         if (!state->hrModeAuto) // TODO Move in separate method
@@ -78,6 +78,12 @@ void UserJourney::processOpcode(const uint8_t& opcode)
     case OPCODE_OPEN_PAGE_HOME:
         removeCurrentPage();
         currentPage = new HomePage(display, temperature, state);
+        break;
+    case OPCODE_CONTEXTUAL_EDIT:
+    case OPCODE_CONTEXTUAL_NEXT:
+    case OPCODE_CONTEXTUAL_CANCEL:
+    case OPCODE_CONTEXTUAL_SAVE:
+        currentPage->processOpcode(opcode);
         break;
     default:
         break;

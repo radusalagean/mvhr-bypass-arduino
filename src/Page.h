@@ -79,9 +79,9 @@ public:
  * Bit 2: Temp table cells
  * Bit 3: HR State cell
  */
-#define HOME_PAGE_INVALIDATION_COMMAND_AREA 0b0001
+#define HOME_PAGE_INVALIDATION_COMMAND_AREA     0b0001
 #define HOME_PAGE_INVALIDATION_TEMP_TABLE_CELLS 0b0010
-#define HOME_PAGE_INVALIDATION_HR_STATE_CELL 0b0100
+#define HOME_PAGE_INVALIDATION_HR_STATE_CELL    0b0100
 
 class HomePage : public Page
 {
@@ -111,15 +111,47 @@ public:
 #define TEMP_SETTINGS_PAGE_RANGE (TEMP_SETTINGS_PAGE_RANGE_HIGH - TEMP_SETTINGS_PAGE_RANGE_LOW)
 #define TEMP_SETTINGS_PAGE_BAR_HEIGHT 12
 
+#define EDIT_STATE_NONE 0
+#define EDIT_STATE_INT_EV_MIN 1
+#define EDIT_STATE_EXT_AD_MIN 2
+#define EDIT_STATE_EXT_AD_MAX 3
+
+#define TEMP_SETTINGS_PAGE_INT_EV_BAR_Y 20
+#define TEMP_SETTINGS_PAGE_INT_EV_DIGITS_Y 33
+#define TEMP_SETTINGS_PAGE_EXT_AD_BAR_Y 78
+#define TEMP_SETTINGS_PAGE_EXT_AD_DIGITS_Y 91
+
+/**
+ * Invalidation flag bits:
+ * Bit 1: Command area
+ * Bit 2: INT EV
+ * Bit 3: EXT AD
+ */
+#define TEMP_SETTINGS_PAGE_INVALIDATION_COMMAND_AREA 0b0001
+#define TEMP_SETTINGS_PAGE_INVALIDATION_INT_EV       0b0010
+#define TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD       0b0100
+
 class TemperatureSettingsPage : public Page
 {
 private:
+    uint8_t intEvMin;
+    uint8_t extAdMin;
+    uint8_t extAdMax;
+    uint8_t editState = EDIT_STATE_NONE;
     void drawLabels();
     float getTempRangeRatio(const uint8_t& temp);
     void drawIntEvValue();
     void drawExtAdValue();
+    void clearTempDigits(const uint8_t& y);
     void drawTempDigits(const uint8_t& temp, const uint16_t& color,
-                        const uint8_t& x, const uint8_t& y);
+                        const uint8_t& x, const uint8_t& y,
+                        const uint8_t& editState);
+    void adjustTemperature(const int8_t& offset);
+    void reloadTemperatures();
+    void persistTemperatures();
+    void enterEditState();
+    void nextEditState();
+    void leaveEditState();
 
 public:
     TemperatureSettingsPage(Display* display, Temperature* temperature, State* state);
