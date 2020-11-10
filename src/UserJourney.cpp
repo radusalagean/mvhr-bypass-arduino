@@ -21,14 +21,12 @@ void UserJourney::processKey(uint8_t& key)
         if (currentPage->leftAction != NULL)
         {
             processOpcode(currentPage->leftAction->opcode);
-            currentPage->processCommandAreaAction(*(currentPage->leftAction));
         }
         break;
     case KEY_RIGHT:
         if (currentPage->rightAction != NULL)
         {
             processOpcode(currentPage->rightAction->opcode);
-            currentPage->processCommandAreaAction(*(currentPage->rightAction));
         }
         break;
     case KEY_MINUS:
@@ -40,9 +38,8 @@ void UserJourney::processKey(uint8_t& key)
     case KEY_SPECIAL:
         if (!state->hrModeAuto) // TODO Move in separate method
         {
-            uint8_t opcode = state->hrDisabled ? OPCODE_HR_OFF : OPCODE_HR_ON;
+            uint8_t opcode = state->hrDisabled ? OPCODE_HR_ON : OPCODE_HR_OFF;
             processOpcode(opcode);
-            currentPage->processOpcode(opcode);
         }
         break;
     default:
@@ -60,13 +57,16 @@ void UserJourney::processOpcode(const uint8_t& opcode)
     switch (opcode)
     {
     case OPCODE_HR_ON:
-        relay->closeCircuit();
+        relay->openCircuit();
+        currentPage->processOpcode(opcode);
         break;
     case OPCODE_HR_OFF:
-        relay->openCircuit();
+        relay->closeCircuit();
+        currentPage->processOpcode(opcode);
         break;
     case OPCODE_SWITCH_MODE:
         state->hrModeAuto = !state->hrModeAuto;
+        currentPage->processOpcode(opcode);
         break;
     case OPCODE_REFRESH_TEMP_VALUES_ON_SCREEN:
         currentPage->processOpcode(OPCODE_REFRESH_TEMP_VALUES_ON_SCREEN);

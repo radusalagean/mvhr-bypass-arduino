@@ -62,7 +62,6 @@ public:
     CommandAreaAction* rightAction = NULL;
     virtual void render();
     virtual void refreshInvalidatedAreas();
-    void processCommandAreaAction(CommandAreaAction& action);
     virtual bool processOpcode(const uint8_t& opcode);
 };
 

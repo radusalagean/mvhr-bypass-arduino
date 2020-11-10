@@ -35,11 +35,6 @@ void Page::refreshInvalidatedAreas()
 {
 }
 
-void Page::processCommandAreaAction(CommandAreaAction& action)
-{
-    processOpcode(action.opcode);
-}
-
 bool Page::processOpcode(const uint8_t& opcode)
 {
     Serial.println(F("base attempt to process opcode"));
