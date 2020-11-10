@@ -13,16 +13,14 @@ void Daemon::handleOutstandingJobs()
     if (millis() - lastTempRefresh > TEMP_REFRESH_INTERVAL)
     {
         temperature->requestTemperatures();
-        float currentIntEv = temperature->getTempIntEv();
-        float currentExtAd = temperature->getTempExtAd();
         if (state->hrModeAuto)
         {
+            float currentIntEv = temperature->getTempIntEv();
+            float currentExtAd = temperature->getTempExtAd();
             // TODO Hysteresis
             if (currentIntEv >= state->intEvMin &&
                 state->extAdMin <= currentExtAd && currentExtAd <= state->extAdMax)
             {
-                Serial.println(state->hrDisabled);
-                Serial.println(!state->hrDisabled);
                 if (!state->hrDisabled)
                     userJourney->processOpcode(OPCODE_HR_OFF);
             }

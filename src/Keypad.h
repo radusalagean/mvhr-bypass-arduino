@@ -25,8 +25,8 @@ struct KeySpec
 class Keypad
 {
 private:
-    volatile uint8_t keyToProcess;
-    volatile unsigned long lastProcessTime;
+    volatile uint8_t keyToProcess = KEY_NONE;
+    volatile unsigned long lastProcessTime = 0L;
 
 public:
     void onInterrupt();

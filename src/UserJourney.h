@@ -16,6 +16,7 @@ private:
     Relay* relay = NULL;
     Temperature* temperature = NULL;
     State* state = NULL;
+    void removeCurrentPage();
 
 public:
     UserJourney(Display* display, Relay* relay, Temperature* temperature, State* state);

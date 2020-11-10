@@ -4,11 +4,13 @@
  * HOME page
  **/
 
-const CommandAreaAction switchModeAction = {"Switch mode", OPCODE_SWITCH_MODE};
+const CommandAreaAction switchModeAction = {"Mode", OPCODE_SWITCH_MODE};
+const CommandAreaAction tempSettingsAction = {"Settings.", OPCODE_OPEN_PAGE_TEMPERATURE_SETTINGS};
 
 HomePage::HomePage(Display* display, Temperature* temperature, State* state) : Page::Page(display, temperature, state)
 {
     leftAction = &switchModeAction;
+    rightAction = &tempSettingsAction;
     initTablePoints();
 }
 
@@ -28,19 +30,18 @@ void HomePage::initTablePoints()
     }
 }
 
-void HomePage::render()
+bool HomePage::render()
 {
-    if (initialized)
+    if (Page::render())
     {
-        if (invalidation != 0)
-            refreshInvalidatedAreas();
-        return;
+        return true;
     }
     drawCommandArea();
     drawTempTable();
     drawHrState();
     drawTempValues();
     initialized = true;
+    return true;
 }
 
 void HomePage::refreshInvalidatedAreas()

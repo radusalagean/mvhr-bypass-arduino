@@ -45,6 +45,10 @@ struct CommandAreaAction
     uint8_t opcode;
 };
 
+/**
+ * BASE page
+ **/
+
 class Page
 {
 private:
@@ -60,10 +64,14 @@ protected:
 public:
     CommandAreaAction* leftAction = NULL;
     CommandAreaAction* rightAction = NULL;
-    virtual void render();
+    virtual bool render();
     virtual void refreshInvalidatedAreas();
     virtual bool processOpcode(const uint8_t& opcode);
 };
+
+/**
+ * HOME page
+ **/
 
 /**
  * Invalidation flag bits:
@@ -74,8 +82,6 @@ public:
 #define HOME_PAGE_INVALIDATION_COMMAND_AREA 0b0001
 #define HOME_PAGE_INVALIDATION_TEMP_TABLE_CELLS 0b0010
 #define HOME_PAGE_INVALIDATION_HR_STATE_CELL 0b0100
-
-
 
 class HomePage : public Page
 {
@@ -90,16 +96,36 @@ private:
 
 public:
     HomePage(Display* display, Temperature* temperature, State* state);
-    void render();
+    bool render();
     void refreshInvalidatedAreas();
     bool processOpcode(const uint8_t& opcode);
     void invalidateTempTableCells();
 };
 
-class MenuPage : public Page
+/**
+ * TemperatureSettings page
+ **/
+
+#define TEMP_SETTINGS_PAGE_RANGE_LOW 10
+#define TEMP_SETTINGS_PAGE_RANGE_HIGH 40
+#define TEMP_SETTINGS_PAGE_RANGE (TEMP_SETTINGS_PAGE_RANGE_HIGH - TEMP_SETTINGS_PAGE_RANGE_LOW)
+#define TEMP_SETTINGS_PAGE_BAR_HEIGHT 12
+
+class TemperatureSettingsPage : public Page
 {
 private:
+    void drawLabels();
+    float getTempRangeRatio(const uint8_t& temp);
+    void drawIntEvValue();
+    void drawExtAdValue();
+    void drawTempDigits(const uint8_t& temp, const uint16_t& color,
+                        const uint8_t& x, const uint8_t& y);
+
 public:
+    TemperatureSettingsPage(Display* display, Temperature* temperature, State* state);
+    bool render();
+    void refreshInvalidatedAreas();
+    bool processOpcode(const uint8_t& opcode);
 };
 
 #endif

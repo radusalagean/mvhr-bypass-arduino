@@ -5,7 +5,6 @@ void Display::init()
     initBacklight();
     tft.init();
     tft.setRotation(3);
-    tft.fillScreen(TFT_BLACK);
     tft.setTextDatum(BL_DATUM);
     tft.setTextColor(TFT_WHITE);
 }
@@ -27,4 +26,9 @@ void Display::powerUp()
     // TODO Implement Power Up in library
     delay(200);
     digitalWrite(PIN_BACKLIGHT, HIGH);
+}
+
+void Display::clearScreen()
+{
+    tft.fillScreen(TFT_BLACK);
 }

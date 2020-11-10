@@ -27,6 +27,7 @@ private:
 public:
     TFT_ILI9163 tft = TFT_ILI9163();
     void init();
+    void clearScreen();
 };
 
 #endif

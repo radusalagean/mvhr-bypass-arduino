@@ -6,7 +6,6 @@
 
 Page::Page(Display* display, Temperature* temperature, State* state)
 {
-    Serial.println(F("Base page ctor called"));
     this->display = display;
     this->temperature = temperature;
     this->state = state;
@@ -27,8 +26,19 @@ void Page::drawCommandArea()
     }
 }
 
-void Page::render()
+bool Page::render()
 {
+    if (initialized)
+    {
+        if (invalidation != 0)
+            refreshInvalidatedAreas();
+        return true;
+    }
+    else
+    {
+        display->clearScreen();
+    }
+    return false;
 }
 
 void Page::refreshInvalidatedAreas()
@@ -37,7 +47,6 @@ void Page::refreshInvalidatedAreas()
 
 bool Page::processOpcode(const uint8_t& opcode)
 {
-    Serial.println(F("base attempt to process opcode"));
     // TODO Handle Go Home OPCODE
     return false;
 }

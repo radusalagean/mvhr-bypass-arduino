@@ -12,6 +12,7 @@
 #include <MemoryFree.h>
 
 #define BAUD_RATE 115200
+// #define MEMORY_DEBUG
 
 /**
  * PINs configuration (for Arduino Uno, R3):
@@ -66,6 +67,10 @@ void setup(void)
     userJourney.init();
 }
 
+#ifdef MEMORY_DEBUG
+unsigned long lastTime = 0L;
+#endif
+
 void loop(void)
 {
     daemon.handleOutstandingJobs();
@@ -77,14 +82,24 @@ void loop(void)
     }
     userJourney.renderCurrentPage();
     // externalStorage.printStorageInfo();
+
+#ifdef MEMORY_DEBUG
+    if (millis() - lastTime > 1000)
+    {
+        printFreeMemory();
+        lastTime = millis();
+    }
+#endif
 }
 
+#ifdef MEMORY_DEBUG
 void printFreeMemory()
 {
     Serial.print(F("Free memory: "));
     Serial.print(freeMemory());
     Serial.println(F(" bytes"));
 }
+#endif
 
 void prepareInterrupts()
 {
