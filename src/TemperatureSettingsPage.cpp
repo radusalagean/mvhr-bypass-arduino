@@ -107,20 +107,35 @@ void TemperatureSettingsPage::adjustTemperature(const int8_t& offset)
     switch (editState)
     {
     case EDIT_STATE_INT_EV_MIN:
-        intEvMin += offset;
-        invalidation |= TEMP_SETTINGS_PAGE_INVALIDATION_INT_EV;
+        if (tempRangeCheck(TEMP_SETTINGS_PAGE_RANGE_LOW, TEMP_SETTINGS_PAGE_RANGE_HIGH, intEvMin + offset))
+        {
+            intEvMin += offset;
+            invalidation |= TEMP_SETTINGS_PAGE_INVALIDATION_INT_EV;
+        }
         break;
     case EDIT_STATE_EXT_AD_MIN:
-        extAdMin += offset;
-        invalidation |= TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD;
+        if (tempRangeCheck(TEMP_SETTINGS_PAGE_RANGE_LOW, extAdMax - TEMP_SETTINGS_PAGE_RANGE_MIN_VALUES, extAdMin + offset))
+        {
+            extAdMin += offset;
+            invalidation |= TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD;
+        }
         break;
     case EDIT_STATE_EXT_AD_MAX:
-        extAdMax += offset;
-        invalidation |= TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD;
+        if (tempRangeCheck(extAdMin + TEMP_SETTINGS_PAGE_RANGE_MIN_VALUES, TEMP_SETTINGS_PAGE_RANGE_HIGH, extAdMax + offset))
+        {
+            extAdMax += offset;
+            invalidation |= TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD;
+        }
         break;
     default:
         break;
     }
+}
+
+bool TemperatureSettingsPage::tempRangeCheck(const uint8_t& low, const uint8_t& high,
+                                             const uint8_t& requested)
+{
+    return low <= requested && requested <= high;
 }
 
 void TemperatureSettingsPage::drawLabels()

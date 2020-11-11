@@ -13,7 +13,7 @@
 #define KEY_PLUS 4
 #define KEY_SPECIAL 5
 
-#define PROCESS_DELAY_MS 500
+#define PROCESS_DELAY_MS 300
 
 struct KeySpec
 {

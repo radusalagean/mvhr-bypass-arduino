@@ -109,6 +109,7 @@ public:
 #define TEMP_SETTINGS_PAGE_RANGE_LOW 10
 #define TEMP_SETTINGS_PAGE_RANGE_HIGH 40
 #define TEMP_SETTINGS_PAGE_RANGE (TEMP_SETTINGS_PAGE_RANGE_HIGH - TEMP_SETTINGS_PAGE_RANGE_LOW)
+#define TEMP_SETTINGS_PAGE_RANGE_MIN_VALUES 3
 #define TEMP_SETTINGS_PAGE_BAR_HEIGHT 12
 
 #define EDIT_STATE_NONE 0
@@ -152,6 +153,8 @@ private:
     void enterEditState();
     void nextEditState();
     void leaveEditState();
+    bool tempRangeCheck(const uint8_t& low, const uint8_t& high,
+                        const uint8_t& requested);
 
 public:
     TemperatureSettingsPage(Display* display, Temperature* temperature, State* state);
