@@ -1,10 +1,10 @@
 #include "Page.h"
 
-const CommandAreaAction homeAction = {"Home", OPCODE_OPEN_PAGE_HOME};
-const CommandAreaAction editAction = {"Edit", OPCODE_CONTEXTUAL_EDIT};
-const CommandAreaAction cancelAction = {"Cancel", OPCODE_CONTEXTUAL_CANCEL};
-const CommandAreaAction nextAction = {"Next", OPCODE_CONTEXTUAL_NEXT};
-const CommandAreaAction saveAction = {"Save", OPCODE_CONTEXTUAL_SAVE};
+const CommandAreaAction homeAction = {"HOME", OPCODE_OPEN_PAGE_HOME};
+const CommandAreaAction editAction = {"EDIT", OPCODE_CONTEXTUAL_EDIT};
+const CommandAreaAction cancelAction = {"CANCEL", OPCODE_CONTEXTUAL_CANCEL};
+const CommandAreaAction nextAction = {"NEXT", OPCODE_CONTEXTUAL_NEXT};
+const CommandAreaAction saveAction = {"SAVE", OPCODE_CONTEXTUAL_SAVE};
 
 TemperatureSettingsPage::TemperatureSettingsPage(Display* display, Temperature* temperature, State* state) : Page::Page(display, temperature, state)
 {
