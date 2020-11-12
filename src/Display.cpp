@@ -6,7 +6,7 @@ void Display::init()
     tft.init();
     tft.setRotation(3);
     tft.setTextDatum(BL_DATUM);
-    tft.setTextColor(TFT_WHITE);
+    resetTextColor();
 }
 
 void Display::initBacklight()
@@ -31,4 +31,9 @@ void Display::powerUp()
 void Display::clearScreen()
 {
     tft.fillScreen(TFT_BLACK);
+}
+
+void Display::resetTextColor()
+{
+    tft.setTextColor(TFT_WHITE, TFT_BLACK);
 }

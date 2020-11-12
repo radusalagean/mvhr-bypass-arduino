@@ -5,7 +5,7 @@
  **/
 
 const CommandAreaAction switchModeAction = {"Mode", OPCODE_SWITCH_MODE};
-const CommandAreaAction tempSettingsAction = {"Settings.", OPCODE_OPEN_PAGE_TEMPERATURE_SETTINGS};
+const CommandAreaAction tempSettingsAction = {"Settings", OPCODE_OPEN_PAGE_TEMPERATURE_SETTINGS};
 
 HomePage::HomePage(Display* display, Temperature* temperature, State* state) : Page::Page(display, temperature, state)
 {
@@ -59,8 +59,10 @@ void HomePage::drawHrState()
 {
     display->tft.fillRect(cellOrigin[0][0].x, cellOrigin[0][0].y,
                           TABLE_CELL_WIDTH, TABLE_CELL_HEIGHT, state->hrDisabled ? TFT_BLUE : TFT_RED);
+    display->tft.setTextColor(TFT_WHITE);
     display->tft.drawStringWithDatum(state->hrModeAuto ? "auto" : "manual",
                                      cellCenter[0][0].x, cellCenter[0][0].y, 2, CC_DATUM);
+    display->resetTextColor();
 }
 
 void HomePage::drawTempTable()
@@ -69,7 +71,7 @@ void HomePage::drawTempTable()
     for (uint8_t row = 1; row < TABLE_ROWS; row++)
     {
         display->tft.drawLine(0, cellOrigin[row][0].y,
-                              PAGE_WIDTH, cellOrigin[row][0].y, TFT_WHITE);
+                              PAGE_WIDTH - 1, cellOrigin[row][0].y, TFT_WHITE);
     }
 
     // Draw column separators

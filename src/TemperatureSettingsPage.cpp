@@ -1,10 +1,10 @@
 #include "Page.h"
 
 const CommandAreaAction homeAction = {"Home", OPCODE_OPEN_PAGE_HOME};
-const CommandAreaAction editAction = {"Edit.", OPCODE_CONTEXTUAL_EDIT};
+const CommandAreaAction editAction = {"Edit", OPCODE_CONTEXTUAL_EDIT};
 const CommandAreaAction cancelAction = {"Cancel", OPCODE_CONTEXTUAL_CANCEL};
-const CommandAreaAction nextAction = {"Next.", OPCODE_CONTEXTUAL_NEXT};
-const CommandAreaAction saveAction = {"Save.", OPCODE_CONTEXTUAL_SAVE};
+const CommandAreaAction nextAction = {"Next", OPCODE_CONTEXTUAL_NEXT};
+const CommandAreaAction saveAction = {"Save", OPCODE_CONTEXTUAL_SAVE};
 
 TemperatureSettingsPage::TemperatureSettingsPage(Display* display, Temperature* temperature, State* state) : Page::Page(display, temperature, state)
 {
@@ -140,8 +140,8 @@ bool TemperatureSettingsPage::tempRangeCheck(const uint8_t& low, const uint8_t& 
 
 void TemperatureSettingsPage::drawLabels()
 {
-    display->tft.drawStringWithDatum("INT EV.", DISPLAY_WIDTH, 0, 2, TR_DATUM);
-    display->tft.drawStringWithDatum("EXT AD", 0, 58, 2, TL_DATUM);
+    display->tft.drawStringWithDatum("INT EV", DISPLAY_WIDTH, 0, 2, TR_DATUM);
+    display->tft.drawStringWithDatum("EXT AD", 0, TEMP_SETTINGS_PAGE_EXT_AD_LABEL_Y, 2, TL_DATUM);
 }
 
 float TemperatureSettingsPage::getTempRangeRatio(const uint8_t& temp)
@@ -211,7 +211,7 @@ void TemperatureSettingsPage::drawTempDigits(const uint8_t& temp, const uint16_t
     display->tft.setTextColor(this->editState == editState ? TFT_BLACK : color, 
                               this->editState == editState ? TFT_WHITE : TFT_BLACK);
     display->tft.drawStringWithDatum(valStr, x, y, 2, TC_DATUM);
-    display->tft.setTextColor(TFT_WHITE);
+    display->resetTextColor();
 }
 
 void TemperatureSettingsPage::reloadTemperatures()

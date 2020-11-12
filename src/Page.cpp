@@ -15,14 +15,15 @@ void Page::drawCommandArea()
 {
     display->tft.fillRect(0, DISPLAY_HEIGHT - COMMAND_AREA_HEIGHT + 1, DISPLAY_WIDTH, DISPLAY_HEIGHT, TFT_BLACK);
     display->tft.drawLine(0, PAGE_HEIGHT,
-                          DISPLAY_WIDTH, PAGE_HEIGHT, TFT_WHITE);
+                          DISPLAY_WIDTH - 1, PAGE_HEIGHT, TFT_WHITE);
+
     if (leftAction != NULL)
     {
-        display->tft.drawString(leftAction->text, 0, DISPLAY_HEIGHT, 2);
+        display->tft.drawStringWithDatum(leftAction->text, 0, DISPLAY_HEIGHT, 2, BL_DATUM);
     }
     if (rightAction != NULL)
     {
-        display->tft.drawRightString(rightAction->text, DISPLAY_WIDTH, DISPLAY_HEIGHT, 2);
+        display->tft.drawStringWithDatum(rightAction->text, DISPLAY_WIDTH, DISPLAY_HEIGHT, 2, BR_DATUM);
     }
 }
 
