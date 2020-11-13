@@ -90,7 +90,7 @@ void HomePage::drawTempTable()
 
 void HomePage::drawTempValues() // TODO Handle temp read error
 {
-    clearCell(4, Cell{1, 1}, Cell{1, 2}, Cell{2, 1}, Cell{2, 2});
+    // clearCell(4, Cell{1, 1}, Cell{1, 2}, Cell{2, 1}, Cell{2, 2}); // We use font with bg color, in this case we don't need to clear the cell
 
     display->tft.drawFloatWithDatum(temperature->getTempExtAd(), 1, cellCenter[1][1].x, cellCenter[1][1].y, 4, CC_DATUM);
     display->tft.drawFloatWithDatum(temperature->getTempExtEv(), 1, cellCenter[2][1].x, cellCenter[2][1].y, 4, CC_DATUM);
@@ -121,15 +121,15 @@ bool HomePage::processOpcode(const uint8_t& opcode)
     return true;
 }
 
-void HomePage::clearCell(uint8_t count, ...)
-{
-    va_list args;
-    va_start(args, count);
-    for (int i = 0; i < count; i++)
-    {
-        Cell cell = va_arg(args, Cell);
-        display->tft.fillRectExclusive(cellOrigin[cell.row][cell.col].x, cellOrigin[cell.row][cell.col].y,
-                                       TABLE_CELL_WIDTH, TABLE_CELL_HEIGHT, TFT_BLACK);
-    }
-    va_end(args);
-}
+// void HomePage::clearCell(uint8_t count, ...)
+// {
+//     va_list args;
+//     va_start(args, count);
+//     for (int i = 0; i < count; i++)
+//     {
+//         Cell cell = va_arg(args, Cell);
+//         display->tft.fillRectExclusive(cellOrigin[cell.row][cell.col].x, cellOrigin[cell.row][cell.col].y,
+//                                        TABLE_CELL_WIDTH, TABLE_CELL_HEIGHT, TFT_BLACK);
+//     }
+//     va_end(args);
+// }

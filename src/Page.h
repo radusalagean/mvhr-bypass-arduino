@@ -92,7 +92,7 @@ private:
     void drawHrState();
     void drawTempTable();
     void drawTempValues();
-    void clearCell(uint8_t count, ...);
+    // void clearCell(uint8_t count, ...);
 
 public:
     HomePage(Display* display, Temperature* temperature, StateController* stateController);
