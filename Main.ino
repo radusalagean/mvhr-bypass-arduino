@@ -1,18 +1,21 @@
 #include "src/Clock.h"
 #include "src/Display.h"
-#include "src/ExternalStorage.h"
+#include "src/InternalStorage.h"
+// #include "src/ExternalStorage.h"
 #include "src/Keypad.h"
 #include "src/Page.h"
 #include "src/UserJourney.h"
 #include "src/Relay.h"
 #include "src/Temperature.h"
 #include "src/State.h"
+#include "src/StateController.h"
 #include "src/Daemon.h"
 
 #include <MemoryFree.h>
 
 #define BAUD_RATE 115200
 // #define MEMORY_DEBUG
+#define WAIT_FOR_SERIAL
 
 /**
  * PINs configuration (for Arduino Uno, R3):
@@ -47,22 +50,32 @@
 
 // Clock clock;
 Display display;
-ExternalStorage externalStorage;
+InternalStorage internalStorage;
+// ExternalStorage externalStorage;
 Keypad keypad;
 Temperature temperature;
-State state;
-Relay relay = Relay(&state);
-UserJourney userJourney = UserJourney(&display, &relay, &temperature, &state);
-Daemon daemon = Daemon(&state, &temperature, &userJourney);
+StateController stateController = StateController(&internalStorage);
+Relay relay = Relay(&stateController);
+UserJourney userJourney = UserJourney(&display, &relay, &temperature, &stateController);
+Daemon daemon = Daemon(&stateController, &temperature, &userJourney);
 
 void setup(void)
 {
     Serial.begin(BAUD_RATE);
+#ifdef WAIT_FOR_SERIAL
+    while (!Serial) {
+    ; // wait for serial port to connect. Needed for native USB
+    }
+#endif
     prepareInterrupts();
+    stateController.loadPersistedState();
     // clock.init();
     display.init();
     relay.init();
-    externalStorage.init();
+#ifdef EEPROM_DEBUG
+    internalStorage.printContentToSerial();
+#endif
+    // externalStorage.init();
     temperature.init();
     userJourney.init();
 }

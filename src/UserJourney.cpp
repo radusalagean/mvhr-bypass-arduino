@@ -1,16 +1,17 @@
 #include "UserJourney.h"
 
-UserJourney::UserJourney(Display* display, Relay* relay, Temperature* temperature, State* state)
+UserJourney::UserJourney(Display* display, Relay* relay, Temperature* temperature, 
+                         StateController* stateController)
 {
     this->display = display;
     this->relay = relay;
     this->temperature = temperature;
-    this->state = state;
+    this->stateController = stateController;
 }
 
 void UserJourney::init()
 {
-    currentPage = new HomePage(display, temperature, state);
+    currentPage = new HomePage(display, temperature, stateController);
 }
 
 void UserJourney::processKey(uint8_t& key)
@@ -36,9 +37,9 @@ void UserJourney::processKey(uint8_t& key)
         currentPage->processOpcode(OPCODE_CONTEXTUAL_PLUS);
         break;
     case KEY_SPECIAL:
-        if (!state->hrModeAuto) // TODO Move in separate method
+        if (!stateController->isHrModeAuto()) // TODO Move in separate method
         {
-            uint8_t opcode = state->hrDisabled ? OPCODE_HR_ON : OPCODE_HR_OFF;
+            uint8_t opcode = stateController->isHrDisabled() ? OPCODE_HR_ON : OPCODE_HR_OFF;
             processOpcode(opcode);
         }
         break;
@@ -65,7 +66,7 @@ void UserJourney::processOpcode(const uint8_t& opcode)
         currentPage->processOpcode(opcode);
         break;
     case OPCODE_SWITCH_MODE:
-        state->hrModeAuto = !state->hrModeAuto;
+        stateController->toggleHrModeAuto();
         currentPage->processOpcode(opcode);
         break;
     case OPCODE_REFRESH_TEMP_VALUES_ON_SCREEN:
@@ -73,11 +74,11 @@ void UserJourney::processOpcode(const uint8_t& opcode)
         break;
     case OPCODE_OPEN_PAGE_TEMPERATURE_SETTINGS:
         removeCurrentPage();
-        currentPage = new TemperatureSettingsPage(display, temperature, state);
+        currentPage = new TemperatureSettingsPage(display, temperature, stateController);
         break;
     case OPCODE_OPEN_PAGE_HOME:
         removeCurrentPage();
-        currentPage = new HomePage(display, temperature, state);
+        currentPage = new HomePage(display, temperature, stateController);
         break;
     case OPCODE_CONTEXTUAL_EDIT:
     case OPCODE_CONTEXTUAL_NEXT:

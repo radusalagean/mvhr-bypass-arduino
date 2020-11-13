@@ -1,8 +1,8 @@
 #include "Daemon.h"
 
-Daemon::Daemon(State* state, Temperature* temperature, UserJourney* userJourney)
+Daemon::Daemon(StateController* stateController, Temperature* temperature, UserJourney* userJourney)
 {
-    this->state = state;
+    this->stateController = stateController;
     this->temperature = temperature;
     this->userJourney = userJourney;
 }
@@ -13,18 +13,18 @@ void Daemon::handleOutstandingJobs()
     if (millis() - lastTempRefresh > TEMP_REFRESH_INTERVAL)
     {
         temperature->requestTemperatures();
-        if (state->hrModeAuto)
+        if (stateController->isHrModeAuto())
         {
             float currentIntEv = temperature->getTempIntEv();
             float currentExtAd = temperature->getTempExtAd();
             // TODO Hysteresis
-            if (currentIntEv >= state->intEvMin &&
-                state->extAdMin <= currentExtAd && currentExtAd <= state->extAdMax)
+            if (currentIntEv >= stateController->getIntEvMin() &&
+                stateController->getExtAdMin() <= currentExtAd && currentExtAd <= stateController->getExtAdMax())
             {
-                if (!state->hrDisabled)
+                if (!stateController->isHrDisabled())
                     userJourney->processOpcode(OPCODE_HR_OFF);
             }
-            else if (state->hrDisabled)
+            else if (stateController->isHrDisabled())
             {
                 userJourney->processOpcode(OPCODE_HR_ON);
             }

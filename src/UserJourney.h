@@ -5,7 +5,7 @@
 #include "Keypad.h"
 #include "Page.h"
 #include "Relay.h"
-#include "State.h"
+#include "StateController.h"
 #include "Temperature.h"
 
 class UserJourney
@@ -15,11 +15,12 @@ private:
     Display* display = NULL;
     Relay* relay = NULL;
     Temperature* temperature = NULL;
-    State* state = NULL;
+    StateController* stateController = NULL;
     void removeCurrentPage();
 
 public:
-    UserJourney(Display* display, Relay* relay, Temperature* temperature, State* state);
+    UserJourney(Display* display, Relay* relay, Temperature* temperature, 
+                StateController* stateController);
     void init();
     void processKey(uint8_t& key);
     void renderCurrentPage();

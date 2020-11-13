@@ -1,7 +1,7 @@
 #ifndef DAEMON_H
 #define DAEMON_H
 
-#include "State.h"
+#include "StateController.h"
 #include "Temperature.h"
 #include "UserJourney.h"
 
@@ -10,13 +10,13 @@
 class Daemon
 {
 private:
-    State* state;
+    StateController* stateController;
     Temperature* temperature;
     UserJourney* userJourney;
     long lastTempRefresh = 0L;
 
 public:
-    Daemon(State* state, Temperature* temperature, UserJourney* userJourney);
+    Daemon(StateController* stateController, Temperature* temperature, UserJourney* userJourney);
     void handleOutstandingJobs();
 };
 

@@ -6,7 +6,7 @@ const CommandAreaAction cancelAction = {"CANCEL", OPCODE_CONTEXTUAL_CANCEL};
 const CommandAreaAction nextAction = {"NEXT", OPCODE_CONTEXTUAL_NEXT};
 const CommandAreaAction saveAction = {"SAVE", OPCODE_CONTEXTUAL_SAVE};
 
-TemperatureSettingsPage::TemperatureSettingsPage(Display* display, Temperature* temperature, State* state) : Page::Page(display, temperature, state)
+TemperatureSettingsPage::TemperatureSettingsPage(Display* display, Temperature* temperature, StateController* stateController) : Page::Page(display, temperature, stateController)
 {
     leftAction = &homeAction;
     rightAction = &editAction;
@@ -216,14 +216,12 @@ void TemperatureSettingsPage::drawTempDigits(const uint8_t& temp, const uint16_t
 
 void TemperatureSettingsPage::reloadTemperatures()
 {
-    intEvMin = state->intEvMin;
-    extAdMin = state->extAdMin;
-    extAdMax = state->extAdMax;
+    intEvMin = stateController->getIntEvMin();
+    extAdMin = stateController->getExtAdMin();
+    extAdMax = stateController->getExtAdMax();
 }
 
 void TemperatureSettingsPage::persistTemperatures()
 {
-    state->intEvMin = intEvMin;
-    state->extAdMin = extAdMin;
-    state->extAdMax = extAdMax;
+    stateController->setTemperatures(intEvMin, extAdMin, extAdMax);
 }

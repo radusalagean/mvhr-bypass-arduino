@@ -3,14 +3,13 @@
 
 #include <Arduino.h>
 
-class State
+typedef struct
 {
-public:
-    bool hrModeAuto = false;
-    bool hrDisabled = false;
-    uint8_t intEvMin = 23;
-    uint8_t extAdMin = 12;
-    uint8_t extAdMax = 25;
-};
+    bool hrModeAuto;
+    bool hrDisabled;
+    uint8_t intEvMin;
+    uint8_t extAdMin;
+    uint8_t extAdMax;
+} State;
 
 #endif

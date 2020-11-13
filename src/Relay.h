@@ -1,7 +1,7 @@
 #ifndef RELAY_H
 #define RELAY_H
 
-#include "State.h"
+#include "StateController.h"
 #include <Arduino.h>
 
 #define RELAY_PIN 7
@@ -11,10 +11,10 @@
 class Relay
 {
 private:
-    State* state = NULL;
+    StateController* stateController = NULL;
 
 public:
-    Relay(State* state);
+    Relay(StateController* stateController);
     void init();
     void closeCircuit();
     void openCircuit();

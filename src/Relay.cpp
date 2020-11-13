@@ -1,24 +1,25 @@
 #include "Relay.h"
 
-Relay::Relay(State* state)
+Relay::Relay(StateController* stateController)
 {
-    this->state = state;
+    this->stateController = stateController;
 }
 
 void Relay::init()
 {
     pinMode(RELAY_PIN, OUTPUT);
-    digitalWrite(RELAY_PIN, HIGH);
+    // Sync with state
+    digitalWrite(RELAY_PIN, stateController->isHrDisabled() ? LOW : HIGH);
 }
 
 void Relay::closeCircuit()
 {
     digitalWrite(RELAY_PIN, LOW);
-    state->hrDisabled = true;
+    stateController->setHrDisabled(true);
 }
 
 void Relay::openCircuit()
 {
     digitalWrite(RELAY_PIN, HIGH);
-    state->hrDisabled = false;
+    stateController->setHrDisabled(false);
 }

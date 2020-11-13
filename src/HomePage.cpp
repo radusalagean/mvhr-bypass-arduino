@@ -7,7 +7,7 @@
 const CommandAreaAction switchModeAction = {"MODE", OPCODE_SWITCH_MODE};
 const CommandAreaAction tempSettingsAction = {"SETTINGS", OPCODE_OPEN_PAGE_TEMPERATURE_SETTINGS};
 
-HomePage::HomePage(Display* display, Temperature* temperature, State* state) : Page::Page(display, temperature, state)
+HomePage::HomePage(Display* display, Temperature* temperature, StateController* stateController) : Page::Page(display, temperature, stateController)
 {
     leftAction = &switchModeAction;
     rightAction = &tempSettingsAction;
@@ -58,9 +58,9 @@ void HomePage::refreshInvalidatedAreas()
 void HomePage::drawHrState()
 {
     display->tft.fillRect(cellOrigin[0][0].x, cellOrigin[0][0].y,
-                          TABLE_CELL_WIDTH, TABLE_CELL_HEIGHT, state->hrDisabled ? TFT_BLUE : TFT_RED);
+                          TABLE_CELL_WIDTH, TABLE_CELL_HEIGHT, stateController->isHrDisabled() ? TFT_BLUE : TFT_RED);
     display->tft.setTextColor(TFT_WHITE);
-    display->tft.drawStringWithDatum(state->hrModeAuto ? "AUTO" : "MANUAL",
+    display->tft.drawStringWithDatum(stateController->isHrModeAuto() ? "AUTO" : "MANUAL",
                                      cellCenter[0][0].x, cellCenter[0][0].y, 2, CC_DATUM);
     display->resetTextColor();
 }

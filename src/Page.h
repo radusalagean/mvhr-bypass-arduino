@@ -3,7 +3,7 @@
 
 #include "Display.h"
 #include "Opcode.h"
-#include "State.h"
+#include "StateController.h"
 #include "Temperature.h"
 #include <stdarg.h>
 
@@ -53,10 +53,10 @@ class Page
 {
 private:
 protected:
-    Page(Display* display, Temperature* temperature, State* state);
+    Page(Display* display, Temperature* temperature, StateController* stateController);
     Display* display = NULL;
     Temperature* temperature = NULL;
-    State* state = NULL;
+    StateController* stateController = NULL;
     byte invalidation = 0;
     boolean initialized = false;
     void drawCommandArea();
@@ -95,7 +95,7 @@ private:
     void clearCell(uint8_t count, ...);
 
 public:
-    HomePage(Display* display, Temperature* temperature, State* state);
+    HomePage(Display* display, Temperature* temperature, StateController* stateController);
     bool render();
     void refreshInvalidatedAreas();
     bool processOpcode(const uint8_t& opcode);
@@ -158,7 +158,7 @@ private:
                         const uint8_t& requested);
 
 public:
-    TemperatureSettingsPage(Display* display, Temperature* temperature, State* state);
+    TemperatureSettingsPage(Display* display, Temperature* temperature, StateController* stateController);
     bool render();
     void refreshInvalidatedAreas();
     bool processOpcode(const uint8_t& opcode);

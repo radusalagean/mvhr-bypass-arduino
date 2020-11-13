@@ -4,11 +4,11 @@
  * BASE page
  **/
 
-Page::Page(Display* display, Temperature* temperature, State* state)
+Page::Page(Display* display, Temperature* temperature, StateController* stateController)
 {
     this->display = display;
     this->temperature = temperature;
-    this->state = state;
+    this->stateController = stateController;
 }
 
 void Page::drawCommandArea()
