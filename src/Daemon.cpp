@@ -15,18 +15,45 @@ void Daemon::handleOutstandingJobs()
         temperature->requestTemperatures();
         if (stateController->isHrModeAuto())
         {
-            float currentIntEv = temperature->getTempIntEv();
-            float currentExtAd = temperature->getTempExtAd();
-            // TODO Hysteresis
-            if (currentIntEv >= stateController->getIntEvMin() &&
-                stateController->getExtAdMin() <= currentExtAd && currentExtAd <= stateController->getExtAdMax())
+            TempConfig intEvMinConfig =
             {
-                if (!stateController->isHrDisabled())
-                    userJourney->processOpcode(OPCODE_HR_OFF);
+                stateController->getIntEvMin() - stateController->getHysteresis(), /* bufferLow */
+                stateController->getIntEvMin(), /* target */
+                stateController->getIntEvMin() + stateController->getHysteresis() /* bufferHigh */
+            };
+            TempConfig extAdMinConfig =
+            {
+                stateController->getExtAdMin() - stateController->getHysteresis(), /* bufferLow */
+                stateController->getExtAdMin(), /* target */
+                stateController->getExtAdMin() + stateController->getHysteresis() /* bufferHigh */
+            };
+            TempConfig extAdMaxConfig =
+            {
+                stateController->getExtAdMax() - stateController->getHysteresis(), /* bufferLow */
+                stateController->getExtAdMax(), /* target */
+                stateController->getExtAdMax() + stateController->getHysteresis() /* bufferHigh */
+            };
+            // Check if the current temps lay outside the buffer zones
+            if (isTempOutsideOfBufferZone(temperature->getTempIntEv(), intEvMinConfig) &&
+                isTempOutsideOfBufferZone(temperature->getTempExtAd(), extAdMinConfig) &&
+                isTempOutsideOfBufferZone(temperature->getTempExtAd(), extAdMaxConfig))
+            {
+                Serial.println(F("Temp outside buffer zones (OK)"));
+                if (temperature->getTempIntEv() >= stateController->getIntEvMin() &&
+                    stateController->getExtAdMin() <= temperature->getTempExtAd() && 
+                    temperature->getTempExtAd() <= stateController->getExtAdMax())
+                {
+                    if (!stateController->isHrDisabled())
+                        userJourney->processOpcode(OPCODE_HR_OFF);
+                }
+                else if (stateController->isHrDisabled())
+                {
+                    userJourney->processOpcode(OPCODE_HR_ON);
+                }
             }
-            else if (stateController->isHrDisabled())
+            else
             {
-                userJourney->processOpcode(OPCODE_HR_ON);
+                Serial.println(F("Temp inside buffer zones (WAIT)"));
             }
         }
         userJourney->processOpcode(OPCODE_REFRESH_TEMP_VALUES_ON_SCREEN);

@@ -8,7 +8,7 @@
 #define STATE_SIGNATURE 0b10101010
 
 #define STATE_VERSION_ADDRESS (STATE_SIGNATURE_ADDRESS + 1)
-#define STATE_VERSION 1
+#define STATE_VERSION 2
 
 #define STATE_ADDRESS (STATE_VERSION_ADDRESS + 1)
 
@@ -28,10 +28,12 @@ public:
     inline uint8_t getIntEvMin() __attribute__((always_inline));
     inline uint8_t getExtAdMin() __attribute__((always_inline));
     inline uint8_t getExtAdMax() __attribute__((always_inline));
+    inline float getHysteresis() __attribute__((always_inline));
     // Setters
     void setHrModeAuto(const bool hrModeAuto);
     void setHrDisabled(const bool hrDisabled);
     void setTemperatures(const uint8_t intEvMin, const uint8_t extAdMin, const uint8_t extAdMax);
+    void setHysteresis(const float hysteresis);
     // Helpers
     void toggleHrModeAuto();
 };
@@ -43,5 +45,6 @@ bool StateController::isHrDisabled() { return state.hrDisabled; }
 uint8_t StateController::getIntEvMin() { return state.intEvMin; }
 uint8_t StateController::getExtAdMin() { return state.extAdMin; }
 uint8_t StateController::getExtAdMax() { return state.extAdMax; }
+float StateController::getHysteresis() { return state.hysteresis; }
 
 #endif

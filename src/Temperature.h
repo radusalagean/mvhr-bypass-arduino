@@ -29,4 +29,11 @@ public:
     float getTempIntEv();
 };
 
+typedef struct
+{
+    float bufferLow; /* target - hysteresis */
+    uint8_t target;
+    float bufferHigh; /* target + hysteresis */
+} TempConfig;
+
 #endif

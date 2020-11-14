@@ -23,7 +23,8 @@ void StateController::initializeStateWithDefaults()
         false, /* hrDisabled */
         23, /* intEvMin */
         12, /* extAdMin */
-        25 /* extAdMax */
+        25, /* extAdMax */
+        0.5f /* hysteresis */
     };
     persist();
 }
@@ -68,6 +69,12 @@ void StateController::setTemperatures(const uint8_t intEvMin, const uint8_t extA
     state.intEvMin = intEvMin;
     state.extAdMin = extAdMin;
     state.extAdMax = extAdMax;
+    persist();
+}
+
+void StateController::setHysteresis(const float hysteresis)
+{
+    state.hysteresis = hysteresis;
     persist();
 }
 
