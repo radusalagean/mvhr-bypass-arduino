@@ -9,11 +9,15 @@
 #include "src/StateController.h"
 #include "src/Daemon.h"
 
-#include <MemoryFree.h>
+#define DEBUG
 
+#ifdef DEBUG
+
+#include <MemoryFree.h>
 #define BAUD_RATE 115200
 // #define MEMORY_DEBUG
-#define WAIT_FOR_SERIAL
+
+#endif
 
 /**
  * PINs configuration (for Arduino Uno, R3):
@@ -57,25 +61,23 @@ Daemon daemon = Daemon(&stateController, &temperature, &userJourney);
 
 void setup(void)
 {
+#ifdef DEBUG
     Serial.begin(BAUD_RATE);
-#ifdef WAIT_FOR_SERIAL
     while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB
     }
+    internalStorage.printContentToSerial();
 #endif
     prepareInterrupts();
     stateController.loadPersistedState();
     display.init();
     relay.init();
-#ifdef EEPROM_DEBUG
-    internalStorage.printContentToSerial();
-#endif
     temperature.init();
     userJourney.init();
 }
 
 #ifdef MEMORY_DEBUG
-unsigned long lastTime = 0L;
+unsigned long lastMemCheck = 0L;
 #endif
 
 void loop(void)
@@ -90,10 +92,10 @@ void loop(void)
     userJourney.renderCurrentPage();
 
 #ifdef MEMORY_DEBUG
-    if (millis() - lastTime > 1000)
+    if (millis() - lastMemCheck > 1000)
     {
         printFreeMemory();
-        lastTime = millis();
+        lastMemCheck = millis();
     }
 #endif
 }

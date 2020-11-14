@@ -32,7 +32,8 @@ public:
     // Setters
     void setHrModeAuto(const bool hrModeAuto);
     void setHrDisabled(const bool hrDisabled);
-    void setTemperatures(const uint8_t intEvMin, const uint8_t extAdMin, const uint8_t extAdMax);
+    void setTemperatures(const float hysteresis, const uint8_t intEvMin, 
+                         const uint8_t extAdMin, const uint8_t extAdMax);
     void setHysteresis(const float hysteresis);
     // Helpers
     void toggleHrModeAuto();

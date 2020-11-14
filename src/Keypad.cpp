@@ -31,7 +31,7 @@ void Keypad::onInterrupt()
             break;
         }
     }
-    Serial.println(keyToProcess);
+    // Serial.println(keyToProcess);
     lastProcessTime = millis();
 }
 

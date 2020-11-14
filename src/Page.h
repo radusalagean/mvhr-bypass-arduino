@@ -100,6 +100,14 @@ public:
  * TemperatureSettings page
  **/
 
+#define TEMP_SETTINGS_PAGE_COLOR_HYST TFT_WHITE
+#define TEMP_SETTINGS_PAGE_COLOR_INT_EV TFT_ORANGE
+#define TEMP_SETTINGS_PAGE_COLOR_EXT_AD TFT_DARKCYAN
+
+#define TEMP_SETTINGS_PAGE_HYST_EDIT_STEP 0.1f
+#define TEMP_SETTINGS_PAGE_TEMP_EDIT_STEP 1
+#define TEMP_SETTINGS_PAGE_HYST_RANGE_LOW 0.f
+#define TEMP_SETTINGS_PAGE_HYST_RANGE_HIGH 1.f
 #define TEMP_SETTINGS_PAGE_RANGE_LOW 10
 #define TEMP_SETTINGS_PAGE_RANGE_HIGH 40
 #define TEMP_SETTINGS_PAGE_RANGE (TEMP_SETTINGS_PAGE_RANGE_HIGH - TEMP_SETTINGS_PAGE_RANGE_LOW)
@@ -107,9 +115,10 @@ public:
 #define TEMP_SETTINGS_PAGE_BAR_HEIGHT 12
 
 #define EDIT_STATE_NONE 0
-#define EDIT_STATE_INT_EV_MIN 1
-#define EDIT_STATE_EXT_AD_MIN 2
-#define EDIT_STATE_EXT_AD_MAX 3
+#define EDIT_STATE_HYST 1
+#define EDIT_STATE_INT_EV_MIN 2
+#define EDIT_STATE_EXT_AD_MIN 3
+#define EDIT_STATE_EXT_AD_MAX 4
 
 #define TEMP_SETTINGS_PAGE_INT_EV_BAR_Y 20
 #define TEMP_SETTINGS_PAGE_INT_EV_DIGITS_Y 33
@@ -117,13 +126,13 @@ public:
 #define TEMP_SETTINGS_PAGE_EXT_AD_BAR_Y 78
 #define TEMP_SETTINGS_PAGE_EXT_AD_DIGITS_Y 91
 
-
-#define TEMP_SETTINGS_PAGE_INVALIDATION_COMMAND_AREA    0b00001
-#define TEMP_SETTINGS_PAGE_INVALIDATION_INT_EV_BAR      0b00010
-#define TEMP_SETTINGS_PAGE_INVALIDATION_INT_EV_DIGITS   0b00100
+#define TEMP_SETTINGS_PAGE_INVALIDATION_COMMAND_AREA    0b000001
+#define TEMP_SETTINGS_PAGE_INVALIDATION_HYST_DIGITS     0b000010
+#define TEMP_SETTINGS_PAGE_INVALIDATION_INT_EV_BAR      0b000100
+#define TEMP_SETTINGS_PAGE_INVALIDATION_INT_EV_DIGITS   0b001000
 #define TEMP_SETTINGS_PAGE_INVALIDATION_INT_EV          (TEMP_SETTINGS_PAGE_INVALIDATION_INT_EV_BAR | TEMP_SETTINGS_PAGE_INVALIDATION_INT_EV_DIGITS)
-#define TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD_BAR      0b01000
-#define TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD_DIGITS   0b10000
+#define TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD_BAR      0b010000
+#define TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD_DIGITS   0b100000
 #define TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD          (TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD_BAR | TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD_DIGITS)
 #define TEMP_SETTINGS_PAGE_INVALIDATION_CURRENT_TEMP    (TEMP_SETTINGS_PAGE_INVALIDATION_INT_EV_BAR | TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD_BAR)
 
@@ -139,19 +148,22 @@ private:
     uint8_t intEvMin;
     uint8_t extAdMin;
     uint8_t extAdMax;
+    float hysteresis;
     uint8_t editState = EDIT_STATE_NONE;
     void drawLabels();
+    void drawHysteresisDigits();
     float getTempRangeRatio(const float& temp);
     void drawIntEv();
     uint8_t drawIntEvBar();
     void drawExtAd();
     BarXAxisConfig drawExtAdBar();
     void drawCurrentTempLine(const float& temp, const uint8_t& y);
+    void drawHysteresisRect(const float& temp, const uint8_t& y);
     void clearTempDigits(const uint8_t& y);
     void drawTempDigits(const uint8_t& temp, const uint16_t& color,
                         const uint8_t& x, const uint8_t& y,
                         const uint8_t& editState);
-    void adjustTemperature(const int8_t& offset);
+    void adjustTemperature(const bool& increment);
     void reloadTemperatures();
     void persistTemperatures();
     void enterEditState();
@@ -159,6 +171,8 @@ private:
     void leaveEditState();
     bool tempRangeCheck(const uint8_t& low, const uint8_t& high,
                         const uint8_t& requested);
+    bool tempRangeCheckHyst(const float& low, const float& high,
+                            const float& requested);
 
 public:
     TemperatureSettingsPage(Display* display, Temperature* temperature, StateController* stateController);

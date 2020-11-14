@@ -64,17 +64,13 @@ void StateController::setHrDisabled(const bool hrDisabled)
     persist();
 }
 
-void StateController::setTemperatures(const uint8_t intEvMin, const uint8_t extAdMin, const uint8_t extAdMax)
+void StateController::setTemperatures(const float hysteresis, const uint8_t intEvMin, 
+                                      const uint8_t extAdMin, const uint8_t extAdMax)
 {
+    state.hysteresis = hysteresis;
     state.intEvMin = intEvMin;
     state.extAdMin = extAdMin;
     state.extAdMax = extAdMax;
-    persist();
-}
-
-void StateController::setHysteresis(const float hysteresis)
-{
-    state.hysteresis = hysteresis;
     persist();
 }
 
