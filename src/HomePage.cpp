@@ -47,12 +47,20 @@ bool HomePage::render()
 void HomePage::refreshInvalidatedAreas()
 {
     if ((invalidation & HOME_PAGE_INVALIDATION_COMMAND_AREA) != 0)
+    {
         drawCommandArea();
+        invalidation ^= HOME_PAGE_INVALIDATION_COMMAND_AREA;
+    }
     if ((invalidation & HOME_PAGE_INVALIDATION_TEMP_TABLE_CELLS) != 0)
+    {
         drawTempValues();
+        invalidation ^= HOME_PAGE_INVALIDATION_TEMP_TABLE_CELLS;
+    }
     if ((invalidation & HOME_PAGE_INVALIDATION_HR_STATE_CELL) != 0)
+    {
         drawHrState();
-    invalidation = 0;
+        invalidation ^= HOME_PAGE_INVALIDATION_HR_STATE_CELL;
+    }
 }
 
 void HomePage::drawHrState()
