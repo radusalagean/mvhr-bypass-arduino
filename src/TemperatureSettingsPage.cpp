@@ -237,13 +237,26 @@ uint8_t TemperatureSettingsPage::drawIntEvBar()
 void TemperatureSettingsPage::drawExtAd()
 {
     BarXAxisConfig bar = drawExtAdBar();
-
     clearTempDigits(TEMP_SETTINGS_PAGE_EXT_AD_DIGITS_Y);
+    uint8_t width = display->tft.textWidth("88", 2);
+    uint8_t halfWidth = (float)width / 2;
+
+    uint8_t extAdMinX = bar.xStart;
+    if (extAdMinX + halfWidth >= DISPLAY_WIDTH - width)
+    {
+        extAdMinX = DISPLAY_WIDTH - width - halfWidth;
+    }
     drawTempDigits(extAdMin, TEMP_SETTINGS_PAGE_COLOR_EXT_AD, 
-                   bar.xStart, TEMP_SETTINGS_PAGE_EXT_AD_DIGITS_Y, 
+                   extAdMinX, TEMP_SETTINGS_PAGE_EXT_AD_DIGITS_Y, 
                    EDIT_STATE_EXT_AD_MIN);
+    
+    uint8_t extAdMaxX = bar.xEnd;
+    if (extAdMaxX - halfWidth <= width)
+    {
+        extAdMaxX = width + halfWidth;
+    }
     drawTempDigits(extAdMax, TEMP_SETTINGS_PAGE_COLOR_EXT_AD, 
-                   bar.xEnd, TEMP_SETTINGS_PAGE_EXT_AD_DIGITS_Y, 
+                   extAdMaxX, TEMP_SETTINGS_PAGE_EXT_AD_DIGITS_Y, 
                    EDIT_STATE_EXT_AD_MAX);
 }
 
