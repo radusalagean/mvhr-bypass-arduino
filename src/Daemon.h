@@ -23,11 +23,6 @@ public:
 
 bool Daemon::isTempOutsideOfBufferZone(const float& candidate, const TempConfig& config)
 {
-    Serial.print(config.bufferLow);
-    Serial.print(" ");
-    Serial.print(candidate);
-    Serial.print(" ");
-    Serial.println(config.bufferHigh);
     return candidate <= config.bufferLow || candidate >= config.bufferHigh;
 }
 

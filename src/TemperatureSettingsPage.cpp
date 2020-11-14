@@ -21,8 +21,8 @@ bool TemperatureSettingsPage::render()
     }
     drawCommandArea();
     drawLabels();
-    drawIntEvValue();
-    drawExtAdValue();
+    drawIntEv();
+    drawExtAd();
     initialized = true;
     return true;
 }
@@ -30,11 +30,26 @@ bool TemperatureSettingsPage::render()
 void TemperatureSettingsPage::refreshInvalidatedAreas()
 {
     if ((invalidation & TEMP_SETTINGS_PAGE_INVALIDATION_COMMAND_AREA) != 0)
+    {
         drawCommandArea();
-    if ((invalidation & TEMP_SETTINGS_PAGE_INVALIDATION_INT_EV) != 0)
-        drawIntEvValue();
-    if ((invalidation & TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD) != 0)
-        drawExtAdValue();
+        invalidation ^= TEMP_SETTINGS_PAGE_INVALIDATION_COMMAND_AREA;
+    }
+    if ((invalidation & TEMP_SETTINGS_PAGE_INVALIDATION_INT_EV) == TEMP_SETTINGS_PAGE_INVALIDATION_INT_EV)
+    {
+        drawIntEv();
+        invalidation ^= TEMP_SETTINGS_PAGE_INVALIDATION_INT_EV;
+    }
+    if ((invalidation & TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD) == TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD)
+    {
+        drawExtAd();
+        invalidation ^= TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD;
+    }
+    if ((invalidation & TEMP_SETTINGS_PAGE_INVALIDATION_CURRENT_TEMP) != 0)
+    {
+        drawIntEvBar();
+        drawExtAdBar();
+        invalidation ^= TEMP_SETTINGS_PAGE_INVALIDATION_CURRENT_TEMP;
+    }
     invalidation = 0;
 }
 
@@ -64,6 +79,9 @@ bool TemperatureSettingsPage::processOpcode(const uint8_t& opcode)
     case OPCODE_CONTEXTUAL_SAVE:
         leaveEditState();
         persistTemperatures();
+        break;
+    case OPCODE_REFRESH_TEMP_VALUES_ON_SCREEN:
+        invalidation |= TEMP_SETTINGS_PAGE_INVALIDATION_CURRENT_TEMP;
         break;
     default:
         break;
@@ -144,32 +162,66 @@ void TemperatureSettingsPage::drawLabels()
     display->tft.drawStringWithDatum("EXT AD", 0, TEMP_SETTINGS_PAGE_EXT_AD_LABEL_Y, 2, TL_DATUM);
 }
 
-float TemperatureSettingsPage::getTempRangeRatio(const uint8_t& temp)
+float TemperatureSettingsPage::getTempRangeRatio(const float& temp)
 {
     return (temp - TEMP_SETTINGS_PAGE_RANGE_LOW) / (float)TEMP_SETTINGS_PAGE_RANGE;
 }
 
-void TemperatureSettingsPage::drawIntEvValue()
+void TemperatureSettingsPage::drawIntEv()
 {
-    // bar
-    uint8_t x = DISPLAY_WIDTH * getTempRangeRatio(intEvMin);
-    uint8_t width = DISPLAY_WIDTH - x;
-    if (x  > 0)
-        display->tft.fillRect(0, TEMP_SETTINGS_PAGE_INT_EV_BAR_Y, 
-                              x - 1, TEMP_SETTINGS_PAGE_BAR_HEIGHT, 
-                              TFT_BLACK);
-    display->tft.fillRect(x, TEMP_SETTINGS_PAGE_INT_EV_BAR_Y, 
-                          width, TEMP_SETTINGS_PAGE_BAR_HEIGHT, 
-                          TFT_ORANGE);
+    uint8_t x = drawIntEvBar();
 
-    // value
     clearTempDigits(TEMP_SETTINGS_PAGE_INT_EV_DIGITS_Y);
     drawTempDigits(intEvMin, TFT_ORANGE, 
                    x, TEMP_SETTINGS_PAGE_INT_EV_DIGITS_Y, 
                    EDIT_STATE_INT_EV_MIN);
 }
 
-void TemperatureSettingsPage::drawExtAdValue()
+uint8_t TemperatureSettingsPage::drawIntEvBar()
+{
+    // bar
+    uint8_t x = DISPLAY_WIDTH * getTempRangeRatio(intEvMin);
+    uint8_t width = DISPLAY_WIDTH - x;
+    if (x  > 0)
+        display->tft.fillRect(0, TEMP_SETTINGS_PAGE_INT_EV_BAR_Y, 
+                              x, TEMP_SETTINGS_PAGE_BAR_HEIGHT, 
+                              TFT_BLACK);
+    display->tft.fillRect(x, TEMP_SETTINGS_PAGE_INT_EV_BAR_Y, 
+                          width, TEMP_SETTINGS_PAGE_BAR_HEIGHT, 
+                          TFT_ORANGE);
+
+    // current temp line
+    drawCurrentTempLine(temperature->getTempIntEv(), TEMP_SETTINGS_PAGE_INT_EV_BAR_Y);
+
+    return x;
+}
+
+void TemperatureSettingsPage::drawExtAd()
+{
+    BarXAxisConfig bar = drawExtAdBar();
+
+    clearTempDigits(TEMP_SETTINGS_PAGE_EXT_AD_DIGITS_Y);
+    drawTempDigits(extAdMin, TFT_CYAN, 
+                   bar.xStart, TEMP_SETTINGS_PAGE_EXT_AD_DIGITS_Y, 
+                   EDIT_STATE_EXT_AD_MIN);
+    drawTempDigits(extAdMax, TFT_CYAN, 
+                   bar.xEnd, TEMP_SETTINGS_PAGE_EXT_AD_DIGITS_Y, 
+                   EDIT_STATE_EXT_AD_MAX);
+}
+
+void TemperatureSettingsPage::drawCurrentTempLine(const float& temp, const uint8_t& y)
+{
+    if (temp >= TEMP_SETTINGS_PAGE_RANGE_LOW && 
+        temp <= TEMP_SETTINGS_PAGE_RANGE_HIGH)
+    {
+        uint8_t currentTempX = DISPLAY_WIDTH * getTempRangeRatio(temp);
+        display->tft.drawLine(currentTempX, y,
+                              currentTempX, y + (TEMP_SETTINGS_PAGE_BAR_HEIGHT - 1),
+                              TFT_RED);
+    }
+}
+
+BarXAxisConfig TemperatureSettingsPage::drawExtAdBar()
 {
     // bar
     uint8_t xStart = DISPLAY_WIDTH * getTempRangeRatio(extAdMin);
@@ -177,7 +229,7 @@ void TemperatureSettingsPage::drawExtAdValue()
     uint8_t width = xEnd - xStart;
     if (xStart > 0)
         display->tft.fillRect(0, TEMP_SETTINGS_PAGE_EXT_AD_BAR_Y, 
-                              xStart - 1, TEMP_SETTINGS_PAGE_BAR_HEIGHT, 
+                              xStart, TEMP_SETTINGS_PAGE_BAR_HEIGHT, 
                               TFT_BLACK);
     display->tft.fillRect(xStart, TEMP_SETTINGS_PAGE_EXT_AD_BAR_Y, 
                           width, TEMP_SETTINGS_PAGE_BAR_HEIGHT, 
@@ -186,15 +238,10 @@ void TemperatureSettingsPage::drawExtAdValue()
         display->tft.fillRect(xEnd, TEMP_SETTINGS_PAGE_EXT_AD_BAR_Y, 
                               DISPLAY_WIDTH - xEnd, TEMP_SETTINGS_PAGE_BAR_HEIGHT, 
                               TFT_BLACK);
+    // current temp line
+    drawCurrentTempLine(temperature->getTempExtAd(), TEMP_SETTINGS_PAGE_EXT_AD_BAR_Y);
 
-    // values
-    clearTempDigits(TEMP_SETTINGS_PAGE_EXT_AD_DIGITS_Y);
-    drawTempDigits(extAdMin, TFT_CYAN, 
-                   xStart, TEMP_SETTINGS_PAGE_EXT_AD_DIGITS_Y, 
-                   EDIT_STATE_EXT_AD_MIN);
-    drawTempDigits(extAdMax, TFT_CYAN, 
-                   xEnd, TEMP_SETTINGS_PAGE_EXT_AD_DIGITS_Y, 
-                   EDIT_STATE_EXT_AD_MAX);
+    return BarXAxisConfig {xStart, xEnd};
 }
 
 void TemperatureSettingsPage::clearTempDigits(const uint8_t& y)

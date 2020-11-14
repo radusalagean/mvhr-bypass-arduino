@@ -38,7 +38,6 @@ void Daemon::handleOutstandingJobs()
                 isTempOutsideOfBufferZone(temperature->getTempExtAd(), extAdMinConfig) &&
                 isTempOutsideOfBufferZone(temperature->getTempExtAd(), extAdMaxConfig))
             {
-                Serial.println(F("Temp outside buffer zones (OK)"));
                 if (temperature->getTempIntEv() >= stateController->getIntEvMin() &&
                     stateController->getExtAdMin() <= temperature->getTempExtAd() && 
                     temperature->getTempExtAd() <= stateController->getExtAdMax())
@@ -50,10 +49,6 @@ void Daemon::handleOutstandingJobs()
                 {
                     userJourney->processOpcode(OPCODE_HR_ON);
                 }
-            }
-            else
-            {
-                Serial.println(F("Temp inside buffer zones (WAIT)"));
             }
         }
         userJourney->processOpcode(OPCODE_REFRESH_TEMP_VALUES_ON_SCREEN);

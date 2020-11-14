@@ -73,12 +73,6 @@ public:
  * HOME page
  **/
 
-/**
- * Invalidation flag bits:
- * Bit 1: Command area
- * Bit 2: Temp table cells
- * Bit 3: HR State cell
- */
 #define HOME_PAGE_INVALIDATION_COMMAND_AREA     0b0001
 #define HOME_PAGE_INVALIDATION_TEMP_TABLE_CELLS 0b0010
 #define HOME_PAGE_INVALIDATION_HR_STATE_CELL    0b0100
@@ -123,15 +117,21 @@ public:
 #define TEMP_SETTINGS_PAGE_EXT_AD_BAR_Y 78
 #define TEMP_SETTINGS_PAGE_EXT_AD_DIGITS_Y 91
 
-/**
- * Invalidation flag bits:
- * Bit 1: Command area
- * Bit 2: INT EV
- * Bit 3: EXT AD
- */
-#define TEMP_SETTINGS_PAGE_INVALIDATION_COMMAND_AREA 0b0001
-#define TEMP_SETTINGS_PAGE_INVALIDATION_INT_EV       0b0010
-#define TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD       0b0100
+
+#define TEMP_SETTINGS_PAGE_INVALIDATION_COMMAND_AREA    0b00001
+#define TEMP_SETTINGS_PAGE_INVALIDATION_INT_EV_BAR      0b00010
+#define TEMP_SETTINGS_PAGE_INVALIDATION_INT_EV_DIGITS   0b00100
+#define TEMP_SETTINGS_PAGE_INVALIDATION_INT_EV          (TEMP_SETTINGS_PAGE_INVALIDATION_INT_EV_BAR | TEMP_SETTINGS_PAGE_INVALIDATION_INT_EV_DIGITS)
+#define TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD_BAR      0b01000
+#define TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD_DIGITS   0b10000
+#define TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD          (TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD_BAR | TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD_DIGITS)
+#define TEMP_SETTINGS_PAGE_INVALIDATION_CURRENT_TEMP    (TEMP_SETTINGS_PAGE_INVALIDATION_INT_EV_BAR | TEMP_SETTINGS_PAGE_INVALIDATION_EXT_AD_BAR)
+
+typedef struct
+{
+    uint8_t xStart;
+    uint8_t xEnd;
+} BarXAxisConfig;
 
 class TemperatureSettingsPage : public Page
 {
@@ -141,9 +141,12 @@ private:
     uint8_t extAdMax;
     uint8_t editState = EDIT_STATE_NONE;
     void drawLabels();
-    float getTempRangeRatio(const uint8_t& temp);
-    void drawIntEvValue();
-    void drawExtAdValue();
+    float getTempRangeRatio(const float& temp);
+    void drawIntEv();
+    uint8_t drawIntEvBar();
+    void drawExtAd();
+    BarXAxisConfig drawExtAdBar();
+    void drawCurrentTempLine(const float& temp, const uint8_t& y);
     void clearTempDigits(const uint8_t& y);
     void drawTempDigits(const uint8_t& temp, const uint16_t& color,
                         const uint8_t& x, const uint8_t& y,
