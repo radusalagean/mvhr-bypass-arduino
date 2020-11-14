@@ -1,7 +1,5 @@
-#include "src/Clock.h"
 #include "src/Display.h"
 #include "src/InternalStorage.h"
-// #include "src/ExternalStorage.h"
 #include "src/Keypad.h"
 #include "src/Page.h"
 #include "src/UserJourney.h"
@@ -27,8 +25,8 @@
  * A1 -
  * A2 -
  * A3 -
- * A4 - RTC (Logging shield)
- * A5 - RTC (Logging shield)
+ * A4 -
+ * A5 -
  * D0 (RX, UART out) -
  * D1 (TX, UART in) -
  * D2 (Interrup compatible) - OneWire (Temperature sensors)
@@ -39,19 +37,17 @@
  * D7 - Relay
  * D8 - 
  * D9 (PWM) - Display Backlight
- * D10 (SPI SS, PWM) - SD Card - CS (Logging shield)
- * D11 (SPI MOSI, PWM) - SD Card  (Logging shield) - and - Display (DATA - SCA)
- * D12 (SPI MISO) - SD Card (Logging shield)
- * D13 (SPI SCK) - SD Card (Logging shield) - and - Display (CLOCK - SCL)
+ * D10 (SPI SS, PWM) -
+ * D11 (SPI MOSI, PWM) - Display (DATA - SCA)
+ * D12 (SPI MISO) -
+ * D13 (SPI SCK) - Display (CLOCK - SCL)
  * AREF -
  * SDA (I2C Data) -
  * SCL (I2C Clock) -
  * */
 
-// Clock clock;
 Display display;
 InternalStorage internalStorage;
-// ExternalStorage externalStorage;
 Keypad keypad;
 Temperature temperature;
 StateController stateController = StateController(&internalStorage);
@@ -69,13 +65,11 @@ void setup(void)
 #endif
     prepareInterrupts();
     stateController.loadPersistedState();
-    // clock.init();
     display.init();
     relay.init();
 #ifdef EEPROM_DEBUG
     internalStorage.printContentToSerial();
 #endif
-    // externalStorage.init();
     temperature.init();
     userJourney.init();
 }
@@ -94,7 +88,6 @@ void loop(void)
         keypad.markAsProcessed();
     }
     userJourney.renderCurrentPage();
-    // externalStorage.printStorageInfo();
 
 #ifdef MEMORY_DEBUG
     if (millis() - lastTime > 1000)
