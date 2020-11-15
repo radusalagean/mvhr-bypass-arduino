@@ -5,12 +5,12 @@
  **/
 
 const CommandAreaAction switchModeAction = {"MODE", OPCODE_SWITCH_MODE};
-const CommandAreaAction tempSettingsAction = {"SETTINGS", OPCODE_OPEN_PAGE_TEMPERATURE_SETTINGS};
+const CommandAreaAction settingsAction = {"SETTINGS", OPCODE_OPEN_PAGE_SETTINGS};
 
 HomePage::HomePage(Display* display, Temperature* temperature, StateController* stateController) : Page::Page(display, temperature, stateController)
 {
     leftAction = &switchModeAction;
-    rightAction = &tempSettingsAction;
+    rightAction = &settingsAction;
     initTablePoints();
 }
 

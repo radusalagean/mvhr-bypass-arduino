@@ -78,9 +78,9 @@ void UserJourney::processOpcode(const uint8_t& opcode)
     case OPCODE_REFRESH_TEMP_VALUES_ON_SCREEN:
         currentPage->processOpcode(OPCODE_REFRESH_TEMP_VALUES_ON_SCREEN);
         break;
-    case OPCODE_OPEN_PAGE_TEMPERATURE_SETTINGS:
+    case OPCODE_OPEN_PAGE_SETTINGS:
         removeCurrentPage();
-        currentPage = new TemperatureSettingsPage(display, temperature, stateController);
+        currentPage = new SettingsPage(display, temperature, stateController);
         break;
     case OPCODE_OPEN_PAGE_HOME:
         removeCurrentPage();
