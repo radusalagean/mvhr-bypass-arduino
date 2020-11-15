@@ -86,7 +86,8 @@ private:
     void drawHrState();
     void drawTempTable();
     void drawTempValues();
-    // void clearCell(uint8_t count, ...);
+    void drawTempValue(const float& temp, const Point2d& centerPoint);
+    void clearCell(uint8_t count, ...);
 
 public:
     HomePage(Display* display, Temperature* temperature, StateController* stateController);

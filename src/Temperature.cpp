@@ -29,24 +29,20 @@ float Temperature::getTemp(DeviceAddress& addr)
 
 float Temperature::getTempExtEv()
 {
-    // return 21.f;
     return getTemp(extEv);
 }
 
 float Temperature::getTempExtAd()
 {
-    // return 11.f;
     return getTemp(extAd);
 }
 
 float Temperature::getTempIntAd()
 {
-    // return 12.f;
     return getTemp(intAd);
 }
 
 float Temperature::getTempIntEv()
 {
-    // return 22.f;
     return getTemp(intEv);
 }

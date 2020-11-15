@@ -96,14 +96,33 @@ void HomePage::drawTempTable()
     display->tft.drawStringWithDatum("INT", cellCenter[0][2].x, cellCenter[0][2].y, 2, CC_DATUM);
 }
 
-void HomePage::drawTempValues() // TODO Handle temp read error
+void HomePage::drawTempValues()
 {
-    // clearCell(4, Cell{1, 1}, Cell{1, 2}, Cell{2, 1}, Cell{2, 2}); // We use font with bg color, in this case we don't need to clear the cell
+    // We use font with bg color and padding, in this case we don't need to clear the cell
+    // Kept in case I'll use transparent bg color / no padding in the future, or for reference purposes:
+    // clearCell(4, Cell{1, 1}, Cell{1, 2}, Cell{2, 1}, Cell{2, 2}); 
+    display->tft.setTextPadding(TABLE_CELL_WIDTH - 1);
+    drawTempValue(temperature->getTempExtAd(), cellCenter[1][1]);
+    drawTempValue(temperature->getTempExtEv(), cellCenter[2][1]);
+    drawTempValue(temperature->getTempIntAd(), cellCenter[1][2]);
+    drawTempValue(temperature->getTempIntEv(), cellCenter[2][2]);
+    display->tft.setTextPadding(0);
+}
 
-    display->tft.drawFloatWithDatum(temperature->getTempExtAd(), 1, cellCenter[1][1].x, cellCenter[1][1].y, 4, CC_DATUM);
-    display->tft.drawFloatWithDatum(temperature->getTempExtEv(), 1, cellCenter[2][1].x, cellCenter[2][1].y, 4, CC_DATUM);
-    display->tft.drawFloatWithDatum(temperature->getTempIntAd(), 1, cellCenter[1][2].x, cellCenter[1][2].y, 4, CC_DATUM);
-    display->tft.drawFloatWithDatum(temperature->getTempIntEv(), 1, cellCenter[2][2].x, cellCenter[2][2].y, 4, CC_DATUM);
+void HomePage::drawTempValue(const float& temp, const Point2d& centerPoint)
+{
+    
+    if (temp == TEMP_READ_ERROR)
+    {
+        display->tft.setTextColor(TFT_RED, TFT_BLACK);
+        display->tft.drawStringWithDatum("ERR", centerPoint.x, centerPoint.y, 4, CC_DATUM);
+        display->resetTextColor();
+        return;
+    }
+    char strVal[6];
+    display->tft.floatToString(temp, temp <= -10.f ? 0 : 1, strVal, 6);
+    display->tft.drawStringWithDatum(strVal, centerPoint.x, centerPoint.y, 4, CC_DATUM);
+    display->resetTextColor();
 }
 
 bool HomePage::processOpcode(const uint8_t& opcode)
