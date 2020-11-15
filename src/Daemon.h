@@ -7,6 +7,9 @@
 
 #define TEMP_REFRESH_INTERVAL 5000 // 5s
 
+// #define DISABLE_SCREEN_TIMEOUT // can be uncommented for debugging sessions
+#define SCREEN_TIMEOUT 30000 // 30s
+
 class Daemon
 {
 private:
@@ -15,6 +18,7 @@ private:
     UserJourney* userJourney;
     long lastTempRefresh = 0L;
     inline bool isTempOutsideOfBufferZone(const float& candidate, const TempConfig& config) __attribute__((always_inline));
+    void refreshTemperatureData();
 
 public:
     Daemon(StateController* stateController, Temperature* temperature, UserJourney* userJourney);

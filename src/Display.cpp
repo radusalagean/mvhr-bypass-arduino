@@ -15,19 +15,6 @@ void Display::initBacklight()
     digitalWrite(PIN_BACKLIGHT, HIGH);
 }
 
-void Display::powerDown()
-{
-    digitalWrite(PIN_BACKLIGHT, LOW);
-    // TODO Implement Power Down in library
-}
-
-void Display::powerUp()
-{
-    // TODO Implement Power Up in library
-    delay(200);
-    digitalWrite(PIN_BACKLIGHT, HIGH);
-}
-
 void Display::clearScreen()
 {
     tft.fillScreen(TFT_BLACK);
@@ -36,4 +23,19 @@ void Display::clearScreen()
 void Display::resetTextColor()
 {
     tft.setTextColor(TFT_WHITE, TFT_BLACK);
+}
+
+void Display::powerDown()
+{
+    digitalWrite(PIN_BACKLIGHT, LOW);
+    tft.powerDown();
+    poweredUp = false;
+}
+
+void Display::powerUp()
+{
+    tft.powerUp();
+    delay(200);
+    digitalWrite(PIN_BACKLIGHT, HIGH);
+    poweredUp = true;
 }

@@ -20,15 +20,22 @@
 class Display
 {
 private:
+    bool poweredUp = true;
     void initBacklight();
-    void powerDown();
-    void powerUp();
 
 public:
     TFT_ILI9163 tft = TFT_ILI9163();
     void init();
     void clearScreen();
     void resetTextColor();
+    void powerDown();
+    void powerUp();
+    inline bool isPoweredUp() __attribute__((always_inline));
 };
+
+bool Display::isPoweredUp()
+{
+    return poweredUp;
+}
 
 #endif

@@ -17,6 +17,7 @@ private:
     Temperature* temperature = NULL;
     StateController* stateController = NULL;
     void removeCurrentPage();
+    unsigned long lastKeyPressTime = 0L;
 
 public:
     UserJourney(Display* display, Relay* relay, Temperature* temperature, 
@@ -25,6 +26,30 @@ public:
     void processKey(uint8_t& key);
     void renderCurrentPage();
     void processOpcode(const uint8_t& opcode);
+    inline void powerUpDisplay() __attribute__((always_inline));
+    inline void powerDownDisplay() __attribute__((always_inline));
+    inline unsigned long getLastKeyPressTime() __attribute__((always_inline));
+    inline bool isDisplayPoweredUp() __attribute__((always_inline));
 };
+
+void UserJourney::powerUpDisplay()
+{
+    display->powerUp();
+}
+
+void UserJourney::powerDownDisplay()
+{
+    display->powerDown();
+}
+
+unsigned long UserJourney::getLastKeyPressTime()
+{
+    return lastKeyPressTime;
+}
+
+bool UserJourney::isDisplayPoweredUp()
+{
+    return display->isPoweredUp();
+}
 
 #endif

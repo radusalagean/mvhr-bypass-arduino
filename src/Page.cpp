@@ -48,7 +48,6 @@ void Page::refreshInvalidatedAreas()
 
 bool Page::processOpcode(const uint8_t& opcode)
 {
-    // TODO Handle Go Home OPCODE
     return false;
 }
 

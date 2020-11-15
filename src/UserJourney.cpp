@@ -16,6 +16,12 @@ void UserJourney::init()
 
 void UserJourney::processKey(uint8_t& key)
 {
+    lastKeyPressTime = millis();
+    if (!display->isPoweredUp())
+    {
+        powerUpDisplay();
+        return;
+    }
     switch (key)
     {
     case KEY_LEFT:
@@ -37,7 +43,7 @@ void UserJourney::processKey(uint8_t& key)
         currentPage->processOpcode(OPCODE_CONTEXTUAL_PLUS);
         break;
     case KEY_SPECIAL:
-        if (!stateController->isHrModeAuto()) // TODO Move in separate method
+        if (!stateController->isHrModeAuto())
         {
             uint8_t opcode = stateController->isHrDisabled() ? OPCODE_HR_ON : OPCODE_HR_OFF;
             processOpcode(opcode);
