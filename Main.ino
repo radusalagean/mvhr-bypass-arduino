@@ -74,6 +74,7 @@ void setup(void)
     relay.init();
     temperature.init();
     userJourney.init();
+    daemon.refreshTemperatureData();
 }
 
 #ifdef MEMORY_DEBUG

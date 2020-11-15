@@ -16,12 +16,12 @@ private:
     StateController* stateController;
     Temperature* temperature;
     UserJourney* userJourney;
-    long lastTempRefresh = 0L;
+    unsigned long lastTempRefresh = 0L;
     inline bool isTempOutsideOfBufferZone(const float& candidate, const TempConfig& config) __attribute__((always_inline));
-    void refreshTemperatureData();
 
 public:
     Daemon(StateController* stateController, Temperature* temperature, UserJourney* userJourney);
+    void refreshTemperatureData();
     void handleOutstandingJobs();
 };
 
