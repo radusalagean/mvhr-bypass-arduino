@@ -5,7 +5,7 @@
 #include "src/UserJourney.h"
 #include "src/Relay.h"
 #include "src/Temperature.h"
-#include "src/State.h"
+#include "src/lib/mvhr-bypass-common/arduino-esp8266/State.h"
 #include "src/StateController.h"
 #include "src/Daemon.h"
 #include "src/SerialNetwork.h"

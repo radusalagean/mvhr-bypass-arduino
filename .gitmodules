@@ -1,3 +1,6 @@
 [submodule "vendor/TFT_ILI9163"]
 	path = src/vendor/TFT_ILI9163
 	url = https://github.com/radusalagean/TFT_ILI9163.git
+[submodule "src/lib/mvhr-bypass-common"]
+	path = src/lib/mvhr-bypass-common
+	url = https://github.com/radusalagean/mvhr-bypass-common.git

@@ -1,7 +1,7 @@
 #ifndef STATE_CONTROLLER_H
 #define STATE_CONTROLLER_H
 
-#include "State.h"
+#include "lib/mvhr-bypass-common/arduino-esp8266/State.h"
 #include "InternalStorage.h"
 
 #define STATE_SIGNATURE_ADDRESS 0

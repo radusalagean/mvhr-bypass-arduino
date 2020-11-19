@@ -3,7 +3,7 @@
 
 #include <EEPROM.h>
 #include <Arduino.h>
-#include "State.h"
+#include "lib/mvhr-bypass-common/arduino-esp8266/State.h"
 
 // #define EEPROM_DEBUG
 
