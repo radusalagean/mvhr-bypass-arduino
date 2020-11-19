@@ -8,13 +8,14 @@
 #include "src/State.h"
 #include "src/StateController.h"
 #include "src/Daemon.h"
+#include "src/Network.h"
 
 #define DEBUG
 
 #ifdef DEBUG
 
 #include <MemoryFree.h>
-#define BAUD_RATE 115200
+#define BAUD_RATE 9600
 // #define MEMORY_DEBUG
 
 #endif
@@ -39,9 +40,9 @@
  * D5 (PWM) - Display (CD - A0)
  * D6 (PWM) - Display (CS)
  * D7 - Relay
- * D8 - 
- * D9 (PWM) - Display Backlight
- * D10 (SPI SS, PWM) -
+ * D8 - SoftwareSerial RX -> Connect to TX of ESP8266
+ * D9 (PWM) - SoftwareSerial TX -> Connect to RX of ESP8266 (through voltage divider)
+ * D10 (SPI SS, PWM) - Display Backlight
  * D11 (SPI MOSI, PWM) - Display (DATA - SCA)
  * D12 (SPI MISO) -
  * D13 (SPI SCK) - Display (CLOCK - SCL)
@@ -58,6 +59,7 @@ StateController stateController = StateController(&internalStorage);
 Relay relay = Relay(&stateController);
 UserJourney userJourney = UserJourney(&display, &relay, &temperature, &stateController);
 Daemon daemon = Daemon(&stateController, &temperature, &userJourney);
+Network network;
 
 void setup(void)
 {
@@ -66,14 +68,17 @@ void setup(void)
     while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB
     }
+#ifdef EEPROM_DEBUG
     internalStorage.printContentToSerial();
-#endif
+#endif // EEPROM_DEBUG
+#endif // DEBUG
     prepareInterrupts();
     stateController.loadPersistedState();
     display.init();
     relay.init();
     temperature.init();
     userJourney.init();
+    network.init();
     daemon.refreshTemperatureData();
 }
 
@@ -91,6 +96,7 @@ void loop(void)
         keypad.markAsProcessed();
     }
     userJourney.renderCurrentPage();
+    network.handle();
 
 #ifdef MEMORY_DEBUG
     if (millis() - lastMemCheck > 1000)

@@ -5,7 +5,7 @@
 #include <Arduino.h>
 #include "State.h"
 
-#define EEPROM_DEBUG
+// #define EEPROM_DEBUG
 
 class InternalStorage
 {

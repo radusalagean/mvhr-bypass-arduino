@@ -10,7 +10,7 @@
     Arduino Uno		sclk=13, data=11
 */
 
-#define PIN_BACKLIGHT 9
+#define PIN_BACKLIGHT 10
 
 #define DISPLAY_WIDTH 160
 #define DISPLAY_HEIGHT 128
