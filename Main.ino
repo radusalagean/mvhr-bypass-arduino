@@ -8,7 +8,7 @@
 #include "src/State.h"
 #include "src/StateController.h"
 #include "src/Daemon.h"
-#include "src/Network.h"
+#include "src/SerialNetwork.h"
 
 #define DEBUG
 
@@ -59,7 +59,7 @@ StateController stateController = StateController(&internalStorage);
 Relay relay = Relay(&stateController);
 UserJourney userJourney = UserJourney(&display, &relay, &temperature, &stateController);
 Daemon daemon = Daemon(&stateController, &temperature, &userJourney);
-Network network;
+SerialNetwork serialNetwork;
 
 void setup(void)
 {
@@ -78,7 +78,7 @@ void setup(void)
     relay.init();
     temperature.init();
     userJourney.init();
-    network.init();
+    serialNetwork.init();
     daemon.refreshTemperatureData();
 }
 
@@ -96,7 +96,7 @@ void loop(void)
         keypad.markAsProcessed();
     }
     userJourney.renderCurrentPage();
-    network.handle();
+    serialNetwork.handle();
 
 #ifdef MEMORY_DEBUG
     if (millis() - lastMemCheck > 1000)
