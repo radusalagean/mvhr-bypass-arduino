@@ -27,8 +27,8 @@
  * 3.3V -
  * 5V -
  * A0 - Keypad analog in
- * A1 -
- * A2 -
+ * A1 - DEBUG SoftwareSerial RX -> Connect to TX1 (GPIO 2) of ESP8266
+ * A2 - SoftwareSerial TX (Assigned but not used)
  * A3 -
  * A4 -
  * A5 -
@@ -59,7 +59,7 @@ StateController stateController = StateController(&internalStorage);
 Relay relay = Relay(&stateController);
 UserJourney userJourney = UserJourney(&display, &relay, &temperature, &stateController);
 Daemon daemon = Daemon(&stateController, &temperature, &userJourney);
-SerialNetwork serialNetwork;
+SerialNetwork serialNetwork = SerialNetwork(&stateController);
 
 void setup(void)
 {
@@ -96,7 +96,8 @@ void loop(void)
         keypad.markAsProcessed();
     }
     userJourney.renderCurrentPage();
-    serialNetwork.handle();
+    serialNetwork.printRemoteDebugMessages();
+    serialNetwork.handleOutstandingPackets();
 
 #ifdef MEMORY_DEBUG
     if (millis() - lastMemCheck > 1000)

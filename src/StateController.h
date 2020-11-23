@@ -29,6 +29,7 @@ public:
     inline uint8_t getExtAdMin() __attribute__((always_inline));
     inline uint8_t getExtAdMax() __attribute__((always_inline));
     inline float getHysteresis() __attribute__((always_inline));
+    inline State getState() __attribute__((always_inline));
     // Setters
     void setHrModeAuto(const bool hrModeAuto);
     void setHrDisabled(const bool hrDisabled);
@@ -47,5 +48,6 @@ uint8_t StateController::getIntEvMin() { return state.intEvMin; }
 uint8_t StateController::getExtAdMin() { return state.extAdMin; }
 uint8_t StateController::getExtAdMax() { return state.extAdMax; }
 float StateController::getHysteresis() { return state.hysteresis; }
+State StateController::getState() { return state; }
 
 #endif
