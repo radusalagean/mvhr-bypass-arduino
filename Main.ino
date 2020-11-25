@@ -96,7 +96,6 @@ void loop(void)
         keypad.markAsProcessed();
     }
     userJourney.renderCurrentPage();
-    serialNetwork.printRemoteDebugMessages();
     serialNetwork.handleOutstandingPackets();
 
 #ifdef MEMORY_DEBUG

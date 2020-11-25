@@ -9,9 +9,8 @@ SerialNetwork::SerialNetwork(StateController* stateController) :
 void SerialNetwork::init()
 {
     // note: the last initialized serial line is put into exclusive listen mode by default!
-    dataLineSerial.begin(REMOTE_SERIAL_BAUD_RATE);
     debugLineSerialRx.begin(REMOTE_SERIAL_BAUD_RATE);
-    listenData();
+    dataLineSerial.begin(REMOTE_SERIAL_BAUD_RATE);
 }
 
 void SerialNetwork::processPacket()
@@ -39,35 +38,7 @@ void SerialNetwork::sendState()
     delete[] buffer;
 }
 
-void SerialNetwork::printRemoteDebugMessages()
-{
-    if (debugLineSerialRx.isListening())
-    {
-        if (millis() - debugListenStartTime > 5000)
-        {
-            listenData();
-        }
-        else
-        {
-            while (debugLineSerialRx.available())
-                Serial.write(debugLineSerialRx.read());
-        }
-    }
-}
-
-void SerialNetwork::listenDebug()
-{
-    debugLineSerialRx.listen();
-}
-
-void SerialNetwork::listenData()
-{
-    dataLineSerial.listen();
-}
-
 void SerialNetwork::sendPacket(TransmissionPacket& packet)
 {
     BaseSerialNetwork::sendPacket(packet);
-    listenDebug();
-    debugListenStartTime = millis();
 }

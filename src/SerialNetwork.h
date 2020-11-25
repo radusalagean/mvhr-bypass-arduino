@@ -18,16 +18,12 @@ private:
     SoftwareSerialWrapper debugLineSerialRxW = SoftwareSerialWrapper(&debugLineSerialRx);
     HardwareSerialWrapper debugLineSerialTxW = HardwareSerialWrapper(&Serial);
     StateController* stateController = NULL;
-    unsigned long debugListenStartTime = 0UL;
     void sendState();
     
 public:
     SerialNetwork(StateController* stateController);
     void init();
     void processPacket();
-    void printRemoteDebugMessages();
-    void listenDebug();
-    void listenData();
     void sendPacket(TransmissionPacket& packet);
 };
 
