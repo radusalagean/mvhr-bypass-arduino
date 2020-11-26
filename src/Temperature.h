@@ -3,6 +3,7 @@
 
 #include <DallasTemperature.h>
 #include <OneWire.h>
+#include "lib/mvhr-bypass-common/arduino-esp8266/Temperatures.h"
 
 #define ONE_WIRE_PIN 2
 #define ONE_WIRE_RESOLUTION 12
@@ -27,6 +28,7 @@ public:
     float getTempExtAd();
     float getTempIntAd();
     float getTempIntEv();
+    Temperatures getTemperatures();
 };
 
 typedef struct

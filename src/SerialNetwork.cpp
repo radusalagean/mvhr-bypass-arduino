@@ -1,9 +1,10 @@
 #include "SerialNetwork.h"
 
-SerialNetwork::SerialNetwork(StateController* stateController) : 
+SerialNetwork::SerialNetwork(StateController* stateController, Temperature* temperature) : 
     BaseSerialNetwork(&dataLineSerialW, &debugLineSerialRxW, &debugLineSerialTxW)
 {
     this->stateController = stateController;
+    this->temperature = temperature;
 }
 
 void SerialNetwork::init()
@@ -17,8 +18,14 @@ void SerialNetwork::processPacket()
 {
     switch (transmissionPacket.code)
     {
+    case LOCAL_CONTRACT_CODE_REQUEST_INIT_DATA:
+        sendInitData();
+        break;
     case LOCAL_CONTRACT_CODE_REQUEST_STATE:
         sendState();
+        break;
+    case LOCAL_CONTRACT_CODE_REQUEST_TEMPERATURES:
+        sendTemperatures();
         break;
     
     default:
@@ -26,19 +33,31 @@ void SerialNetwork::processPacket()
     }
 }
 
+void SerialNetwork::sendInitData()
+{
+    InitData initData = InitData {stateController->getState(), temperature->getTemperatures()};
+    send(&initData, LOCAL_CONTRACT_CODE_RESPONSE_INIT_DATA);
+}
+
 void SerialNetwork::sendState()
 {
-    byte* buffer = new byte[sizeof(State)];
-    memcpy(buffer, &stateController->getState(), sizeof(State));
+    send(&stateController->getState(), LOCAL_CONTRACT_CODE_RESPONSE_STATE);
+}
+
+void SerialNetwork::sendTemperatures()
+{
+    send(&temperature->getTemperatures(), LOCAL_CONTRACT_CODE_RESPONSE_TEMPERATURES);
+}
+
+template<typename T>
+void SerialNetwork::send(T* t, uint8_t code)
+{
+    byte* buffer = new byte[sizeof(T)];
+    memcpy(buffer, t, sizeof(T));
     TransmissionPacket packet =
     {
-        LOCAL_CONTRACT_CODE_RESPONSE_STATE, sizeof(State), buffer
+        code, sizeof(T), buffer
     };
     sendPacket(packet);
     delete[] buffer;
-}
-
-void SerialNetwork::sendPacket(TransmissionPacket& packet)
-{
-    BaseSerialNetwork::sendPacket(packet);
 }

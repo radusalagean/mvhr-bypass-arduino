@@ -46,3 +46,14 @@ float Temperature::getTempIntEv()
 {
     return getTemp(intEv);
 }
+
+Temperatures Temperature::getTemperatures()
+{
+    return Temperatures
+    {
+        getTemp(extEv),
+        getTemp(extAd),
+        getTemp(intAd),
+        getTemp(intEv)
+    };
+}

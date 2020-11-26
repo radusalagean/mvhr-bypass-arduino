@@ -3,7 +3,9 @@
 
 #include <SoftwareSerial.h>
 #include "lib/mvhr-bypass-common/arduino-esp8266/BaseSerialNetwork.h"
+#include "lib/mvhr-bypass-common/arduino-esp8266/InitData.h"
 #include "StateController.h"
+#include "Temperature.h"
 #include "SoftwareSerialWrapper.h"
 #include "HardwareSerialWrapper.h"
 
@@ -18,13 +20,17 @@ private:
     SoftwareSerialWrapper debugLineSerialRxW = SoftwareSerialWrapper(&debugLineSerialRx);
     HardwareSerialWrapper debugLineSerialTxW = HardwareSerialWrapper(&Serial);
     StateController* stateController = NULL;
+    Temperature* temperature = NULL;
+    void sendInitData();
     void sendState();
+    void sendTemperatures();
+    template<typename T>
+    void send(T* t, uint8_t code);
     
 public:
-    SerialNetwork(StateController* stateController);
+    SerialNetwork(StateController* stateController, Temperature* temperature);
     void init();
     void processPacket();
-    void sendPacket(TransmissionPacket& packet);
 };
 
 #endif
