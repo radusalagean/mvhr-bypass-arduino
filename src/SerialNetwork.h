@@ -4,10 +4,13 @@
 #include <SoftwareSerial.h>
 #include "lib/mvhr-bypass-common/arduino-esp8266/BaseSerialNetwork.h"
 #include "lib/mvhr-bypass-common/arduino-esp8266/InitData.h"
-#include "StateController.h"
 #include "Temperature.h"
 #include "SoftwareSerialWrapper.h"
 #include "HardwareSerialWrapper.h"
+
+class SerialNetwork;
+
+#include "StateController.h"
 
 #define REMOTE_SERIAL_BAUD_RATE 9600
 
@@ -22,7 +25,6 @@ private:
     StateController* stateController = NULL;
     Temperature* temperature = NULL;
     void sendInitData();
-    void sendState();
     template<typename T>
     void send(T* t, uint8_t code);
     
@@ -30,6 +32,7 @@ public:
     SerialNetwork(StateController* stateController, Temperature* temperature);
     void init();
     void processPacket();
+    void sendState();
     void sendTemperatures();
 };
 

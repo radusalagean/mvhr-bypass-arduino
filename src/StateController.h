@@ -4,6 +4,10 @@
 #include "lib/mvhr-bypass-common/arduino-esp8266/State.h"
 #include "InternalStorage.h"
 
+class StateController;
+
+#include "SerialNetwork.h"
+
 #define STATE_SIGNATURE_ADDRESS 0
 #define STATE_SIGNATURE 0b10101010
 
@@ -17,10 +21,13 @@ class StateController
 private:
     State state;
     InternalStorage* internalStorage = NULL;
+    SerialNetwork* serialNetwork = NULL;
     void persist();
+    void persistAndSendState();
     void initializeStateWithDefaults();
 public:
     StateController(InternalStorage* internalStorage);
+    void init(SerialNetwork* serialNetwork);
     void loadPersistedState();
     // Getters
     inline bool isHrModeAuto() __attribute__((always_inline));

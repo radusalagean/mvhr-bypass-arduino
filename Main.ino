@@ -73,6 +73,7 @@ void setup(void)
 #endif // EEPROM_DEBUG
 #endif // DEBUG
     prepareInterrupts();
+    stateController.init(&serialNetwork);
     stateController.loadPersistedState();
     display.init();
     relay.init();

@@ -5,11 +5,22 @@ StateController::StateController(InternalStorage* internalStorage)
     this->internalStorage = internalStorage;
 }
 
+void StateController::init(SerialNetwork* serialNetwork)
+{
+    this->serialNetwork = serialNetwork;
+}
+
 void StateController::persist()
 {
     internalStorage->put(STATE_SIGNATURE_ADDRESS, STATE_SIGNATURE);
     internalStorage->put(STATE_VERSION_ADDRESS, STATE_VERSION);
     internalStorage->put(STATE_ADDRESS, state);
+}
+
+void StateController::persistAndSendState()
+{
+    persist();
+    serialNetwork->sendState();
 }
 
 void StateController::initializeStateWithDefaults()
@@ -55,13 +66,13 @@ void StateController::loadPersistedState()
 void StateController::setHrModeAuto(const bool hrModeAuto)
 {
     state.hrModeAuto = hrModeAuto;
-    persist();
+    persistAndSendState();
 }
 
 void StateController::setHrDisabled(const bool hrDisabled)
 {
     state.hrDisabled = hrDisabled;
-    persist();
+    persistAndSendState();
 }
 
 void StateController::setTemperatures(const float hysteresis, const uint8_t intEvMin, 
@@ -71,7 +82,7 @@ void StateController::setTemperatures(const float hysteresis, const uint8_t intE
     state.intEvMin = intEvMin;
     state.extAdMin = extAdMin;
     state.extAdMax = extAdMax;
-    persist();
+    persistAndSendState();
 }
 
 // Helpers
@@ -79,5 +90,5 @@ void StateController::setTemperatures(const float hysteresis, const uint8_t intE
 void StateController::toggleHrModeAuto()
 {
     state.hrModeAuto = !state.hrModeAuto;
-    persist();
+    persistAndSendState();
 }
