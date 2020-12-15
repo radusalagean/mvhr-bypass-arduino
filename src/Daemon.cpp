@@ -1,10 +1,11 @@
 #include "Daemon.h"
 
-Daemon::Daemon(StateController* stateController, Temperature* temperature, UserJourney* userJourney)
+Daemon::Daemon(StateController* stateController, Temperature* temperature, UserJourney* userJourney, SerialNetwork* serialNetwork)
 {
     this->stateController = stateController;
     this->temperature = temperature;
     this->userJourney = userJourney;
+    this->serialNetwork = serialNetwork;
 }
 
 void Daemon::handleOutstandingJobs()
@@ -65,5 +66,6 @@ void Daemon::refreshTemperatureData()
         }
     }
     userJourney->processOpcode(OPCODE_REFRESH_TEMP_VALUES_ON_SCREEN);
+    serialNetwork->sendTemperatures();
     lastTempRefresh = millis();
 }
