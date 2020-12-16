@@ -99,6 +99,7 @@ void UserJourney::processOpcode(const uint8_t& opcode)
         removeCurrentPage();
         currentPage = new HomePage(display, temperature, stateController);
         break;
+    case OPCODE_APPLY_STATE_TEMPERATURES:
     case OPCODE_CONTEXTUAL_EDIT:
     case OPCODE_CONTEXTUAL_NEXT:
     case OPCODE_CONTEXTUAL_CANCEL:

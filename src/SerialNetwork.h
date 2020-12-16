@@ -27,13 +27,11 @@ private:
     Temperature* temperature = NULL;
     UserJourney* userJourney = NULL;
     void sendInitData();
-    template<typename T>
-    void send(T* t, uint8_t code);
+    void processPacket();
     
 public:
     SerialNetwork(StateController* stateController, Temperature* temperature, UserJourney* userJourney);
     void init();
-    void processPacket();
     void sendState();
     void sendTemperatures();
 };

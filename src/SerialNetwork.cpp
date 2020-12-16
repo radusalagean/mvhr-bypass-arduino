@@ -34,6 +34,13 @@ void SerialNetwork::processPacket()
     case LOCAL_CONTRACT_CODE_REQUEST_DISABLE_HR:
         userJourney->setManualHrDisabled(true);
         break;
+    case LOCAL_CONTRACT_CODE_REQUEST_APPLY_STATE_TEMPERATURES:
+        State* state = receivePacketBodyObject<State>();
+        stateController->setTemperatures(state->hysteresis, state->intEvMin, 
+                                         state->extAdMin, state->extAdMax);
+        userJourney->processOpcode(OPCODE_APPLY_STATE_TEMPERATURES);
+        delete state;
+        break;
     default:
         break;
     }
@@ -42,28 +49,15 @@ void SerialNetwork::processPacket()
 void SerialNetwork::sendInitData()
 {
     InitData initData = InitData {stateController->getState(), temperature->getTemperatures()};
-    send(&initData, LOCAL_CONTRACT_CODE_RESPONSE_INIT_DATA);
+    send(LOCAL_CONTRACT_CODE_RESPONSE_INIT_DATA, &initData);
 }
 
 void SerialNetwork::sendState()
 {
-    send(&stateController->getState(), LOCAL_CONTRACT_CODE_RESPONSE_STATE);
+    send(LOCAL_CONTRACT_CODE_RESPONSE_STATE, &stateController->getState());
 }
 
 void SerialNetwork::sendTemperatures()
 {
-    send(&temperature->getTemperatures(), LOCAL_CONTRACT_CODE_RESPONSE_TEMPERATURES);
-}
-
-template<typename T>
-void SerialNetwork::send(T* t, uint8_t code)
-{
-    byte* buffer = new byte[sizeof(T)];
-    memcpy(buffer, t, sizeof(T));
-    TransmissionPacket packet =
-    {
-        code, sizeof(T), buffer
-    };
-    sendPacket(packet);
-    delete[] buffer;
+    send(LOCAL_CONTRACT_CODE_RESPONSE_TEMPERATURES, &temperature->getTemperatures());
 }

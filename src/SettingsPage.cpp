@@ -88,6 +88,11 @@ bool SettingsPage::processOpcode(const uint8_t& opcode)
     case OPCODE_REFRESH_TEMP_VALUES_ON_SCREEN:
         invalidation |= SETTINGS_PAGE_INVALIDATION_CURRENT_TEMP;
         break;
+    case OPCODE_APPLY_STATE_TEMPERATURES:
+        invalidateTemperatureAreas();
+        if (editState == SETTINGS_PAGE_EDIT_STATE_NONE)
+            reloadTemperatures();
+        break;
     default:
         break;
     }
@@ -122,6 +127,11 @@ void SettingsPage::leaveEditState()
     rightAction = &editAction;
     invalidation |= SETTINGS_PAGE_INVALIDATION_COMMAND_AREA;
     editState = SETTINGS_PAGE_EDIT_STATE_NONE;
+    invalidateTemperatureAreas();
+}
+
+void SettingsPage::invalidateTemperatureAreas()
+{
     invalidation |= SETTINGS_PAGE_INVALIDATION_HYST_DIGITS;
     invalidation |= SETTINGS_PAGE_INVALIDATION_INT_EV;
     invalidation |= SETTINGS_PAGE_INVALIDATION_EXT_AD;

@@ -78,10 +78,14 @@ void StateController::setHrDisabled(const bool hrDisabled)
 void StateController::setTemperatures(const float hysteresis, const uint8_t intEvMin, 
                                       const uint8_t extAdMin, const uint8_t extAdMax)
 {
-    state.hysteresis = hysteresis;
-    state.intEvMin = intEvMin;
-    state.extAdMin = extAdMin;
-    state.extAdMax = extAdMax;
+    if (STATE_HYST_RANGE_LOW <= hysteresis && hysteresis <= STATE_HYST_RANGE_HIGH)
+        state.hysteresis = hysteresis;
+    if (STATE_TEMPERATURES_RANGE_LOW <= intEvMin && intEvMin <= STATE_TEMPERATURES_RANGE_HIGH)
+        state.intEvMin = intEvMin;
+    if (STATE_TEMPERATURES_RANGE_LOW <= extAdMin && extAdMin + STATE_RANGE_MIN_VALUES <= extAdMax)
+        state.extAdMin = extAdMin;
+    if (extAdMin <= extAdMax - STATE_RANGE_MIN_VALUES && extAdMax <= STATE_TEMPERATURES_RANGE_HIGH)
+        state.extAdMax = extAdMax;
     persistAndSendState();
 }
 

@@ -3,6 +3,7 @@
 
 class Page;
 
+#include "lib/mvhr-bypass-common/arduino-esp8266/State.h"
 #include "Display.h"
 #include "Opcode.h"
 #include "StateController.h"
@@ -109,12 +110,12 @@ public:
 
 #define SETTINGS_PAGE_HYST_EDIT_STEP 0.1f
 #define SETTINGS_PAGE_TEMP_EDIT_STEP 1
-#define SETTINGS_PAGE_HYST_RANGE_LOW 0.f
-#define SETTINGS_PAGE_HYST_RANGE_HIGH 1.f
-#define SETTINGS_PAGE_RANGE_LOW 10
-#define SETTINGS_PAGE_RANGE_HIGH 40
+#define SETTINGS_PAGE_HYST_RANGE_LOW STATE_HYST_RANGE_LOW
+#define SETTINGS_PAGE_HYST_RANGE_HIGH STATE_HYST_RANGE_HIGH
+#define SETTINGS_PAGE_RANGE_LOW STATE_TEMPERATURES_RANGE_LOW
+#define SETTINGS_PAGE_RANGE_HIGH STATE_TEMPERATURES_RANGE_HIGH
 #define SETTINGS_PAGE_RANGE (SETTINGS_PAGE_RANGE_HIGH - SETTINGS_PAGE_RANGE_LOW)
-#define SETTINGS_PAGE_RANGE_MIN_VALUES 3
+#define SETTINGS_PAGE_RANGE_MIN_VALUES STATE_RANGE_MIN_VALUES
 #define SETTINGS_PAGE_BAR_HEIGHT 12
 
 #define SETTINGS_PAGE_EDIT_STATE_NONE 0
@@ -181,6 +182,7 @@ public:
     SettingsPage(Display* display, Temperature* temperature, StateController* stateController);
     bool render();
     void refreshInvalidatedAreas();
+    void invalidateTemperatureAreas();
     bool processOpcode(const uint8_t& opcode);
 };
 
