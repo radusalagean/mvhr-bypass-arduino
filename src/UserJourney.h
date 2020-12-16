@@ -1,6 +1,8 @@
 #ifndef USER_JOURNEY_H
 #define USER_JOURNEY_H
 
+class UserJourney;
+
 #include "Display.h"
 #include "Keypad.h"
 #include "Page.h"
@@ -16,8 +18,8 @@ private:
     Relay* relay = NULL;
     Temperature* temperature = NULL;
     StateController* stateController = NULL;
-    void removeCurrentPage();
     unsigned long lastKeyPressTime = 0L;
+    void removeCurrentPage();
 
 public:
     UserJourney(Display* display, Relay* relay, Temperature* temperature, 
@@ -25,6 +27,7 @@ public:
     void init();
     void processKey(uint8_t& key);
     void renderCurrentPage();
+    void setManualHrDisabled(const bool disabled);
     void processOpcode(const uint8_t& opcode);
     inline void powerUpDisplay() __attribute__((always_inline));
     inline void powerDownDisplay() __attribute__((always_inline));

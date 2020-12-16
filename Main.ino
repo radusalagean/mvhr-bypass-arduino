@@ -58,7 +58,7 @@ Temperature temperature;
 StateController stateController = StateController(&internalStorage);
 Relay relay = Relay(&stateController);
 UserJourney userJourney = UserJourney(&display, &relay, &temperature, &stateController);
-SerialNetwork serialNetwork = SerialNetwork(&stateController, &temperature);
+SerialNetwork serialNetwork = SerialNetwork(&stateController, &temperature, &userJourney);
 Daemon daemon = Daemon(&stateController, &temperature, &userJourney, &serialNetwork);
 
 void setup(void)

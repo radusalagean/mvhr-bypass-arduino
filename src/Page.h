@@ -1,6 +1,8 @@
 #ifndef PAGE_H
 #define PAGE_H
 
+class Page;
+
 #include "Display.h"
 #include "Opcode.h"
 #include "StateController.h"

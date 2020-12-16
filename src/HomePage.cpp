@@ -137,6 +137,8 @@ bool HomePage::processOpcode(const uint8_t& opcode)
     case OPCODE_HR_ON:
     case OPCODE_HR_OFF:
     case OPCODE_SWITCH_MODE:
+    case OPCODE_HR_MODE_AUTO:
+    case OPCODE_HR_MODE_MANUAL:
         invalidation |= HOME_PAGE_INVALIDATION_HR_STATE_CELL;
         break;
     case OPCODE_REFRESH_TEMP_VALUES_ON_SCREEN:

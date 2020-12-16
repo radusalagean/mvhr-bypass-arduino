@@ -1,15 +1,16 @@
 #ifndef SERIAL_NETWORK_H
 #define SERIAL_NETWORK_H
 
+class SerialNetwork;
+
 #include <SoftwareSerial.h>
 #include "lib/mvhr-bypass-common/arduino-esp8266/BaseSerialNetwork.h"
 #include "lib/mvhr-bypass-common/arduino-esp8266/InitData.h"
 #include "Temperature.h"
 #include "SoftwareSerialWrapper.h"
 #include "HardwareSerialWrapper.h"
-
-class SerialNetwork;
-
+#include "Opcode.h"
+#include "UserJourney.h"
 #include "StateController.h"
 
 #define REMOTE_SERIAL_BAUD_RATE 9600
@@ -24,12 +25,13 @@ private:
     HardwareSerialWrapper debugLineSerialTxW = HardwareSerialWrapper(&Serial);
     StateController* stateController = NULL;
     Temperature* temperature = NULL;
+    UserJourney* userJourney = NULL;
     void sendInitData();
     template<typename T>
     void send(T* t, uint8_t code);
     
 public:
-    SerialNetwork(StateController* stateController, Temperature* temperature);
+    SerialNetwork(StateController* stateController, Temperature* temperature, UserJourney* userJourney);
     void init();
     void processPacket();
     void sendState();

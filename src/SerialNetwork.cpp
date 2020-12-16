@@ -1,10 +1,11 @@
 #include "SerialNetwork.h"
 
-SerialNetwork::SerialNetwork(StateController* stateController, Temperature* temperature) : 
+SerialNetwork::SerialNetwork(StateController* stateController, Temperature* temperature, UserJourney* userJourney) : 
     BaseSerialNetwork(&dataLineSerialW, &debugLineSerialRxW, &debugLineSerialTxW)
 {
     this->stateController = stateController;
     this->temperature = temperature;
+    this->userJourney = userJourney;
 }
 
 void SerialNetwork::init()
@@ -21,13 +22,18 @@ void SerialNetwork::processPacket()
     case LOCAL_CONTRACT_CODE_REQUEST_INIT_DATA:
         sendInitData();
         break;
-    case LOCAL_CONTRACT_CODE_REQUEST_STATE:
-        sendState();
+    case LOCAL_CONTRACT_CODE_REQUEST_HR_MODE_AUTO:
+        userJourney->processOpcode(OPCODE_HR_MODE_AUTO);
         break;
-    case LOCAL_CONTRACT_CODE_REQUEST_TEMPERATURES:
-        sendTemperatures();
+    case LOCAL_CONTRACT_CODE_REQUEST_HR_MODE_MANUAL:
+        userJourney->processOpcode(OPCODE_HR_MODE_MANUAL);
         break;
-    
+    case LOCAL_CONTRACT_CODE_REQUEST_ENABLE_HR:
+        userJourney->setManualHrDisabled(false);
+        break;
+    case LOCAL_CONTRACT_CODE_REQUEST_DISABLE_HR:
+        userJourney->setManualHrDisabled(true);
+        break;
     default:
         break;
     }

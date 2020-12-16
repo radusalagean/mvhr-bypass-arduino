@@ -1,11 +1,10 @@
 #ifndef STATE_CONTROLLER_H
 #define STATE_CONTROLLER_H
 
-#include "lib/mvhr-bypass-common/arduino-esp8266/State.h"
-#include "InternalStorage.h"
-
 class StateController;
 
+#include "lib/mvhr-bypass-common/arduino-esp8266/State.h"
+#include "InternalStorage.h"
 #include "SerialNetwork.h"
 
 #define STATE_SIGNATURE_ADDRESS 0

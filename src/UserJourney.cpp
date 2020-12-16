@@ -43,11 +43,7 @@ void UserJourney::processKey(uint8_t& key)
         currentPage->processOpcode(OPCODE_CONTEXTUAL_PLUS);
         break;
     case KEY_SPECIAL:
-        if (!stateController->isHrModeAuto())
-        {
-            uint8_t opcode = stateController->isHrDisabled() ? OPCODE_HR_ON : OPCODE_HR_OFF;
-            processOpcode(opcode);
-        }
+        setManualHrDisabled(!stateController->isHrDisabled());
         break;
     default:
         break;
@@ -57,6 +53,15 @@ void UserJourney::processKey(uint8_t& key)
 void UserJourney::renderCurrentPage()
 {
     currentPage->render();
+}
+
+void UserJourney::setManualHrDisabled(const bool disabled)
+{
+    if (!stateController->isHrModeAuto())
+    {
+        uint8_t opcode = disabled ? OPCODE_HR_OFF : OPCODE_HR_ON;
+        processOpcode(opcode);
+    }
 }
 
 void UserJourney::processOpcode(const uint8_t& opcode)
@@ -71,8 +76,16 @@ void UserJourney::processOpcode(const uint8_t& opcode)
         relay->closeCircuit();
         currentPage->processOpcode(opcode);
         break;
-    case OPCODE_SWITCH_MODE:
+    case OPCODE_SWITCH_MODE: // Used by HomePage
         stateController->toggleHrModeAuto();
+        currentPage->processOpcode(opcode);
+        break;
+    case OPCODE_HR_MODE_AUTO: // Used by SerialNetwork
+        stateController->setHrModeAuto(true);
+        currentPage->processOpcode(opcode);
+        break;
+    case OPCODE_HR_MODE_MANUAL: // Used by SerialNetwork
+        stateController->setHrModeAuto(false);
         currentPage->processOpcode(opcode);
         break;
     case OPCODE_REFRESH_TEMP_VALUES_ON_SCREEN:

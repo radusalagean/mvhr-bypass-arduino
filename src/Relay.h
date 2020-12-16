@@ -1,6 +1,8 @@
 #ifndef RELAY_H
 #define RELAY_H
 
+class Relay;
+
 #include "StateController.h"
 #include <Arduino.h>
 
