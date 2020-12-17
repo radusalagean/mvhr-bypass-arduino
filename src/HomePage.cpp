@@ -120,7 +120,7 @@ void HomePage::drawTempValue(const float& temp, const Point2d& centerPoint)
         return;
     }
     char strVal[6];
-    display->tft.floatToString(temp, temp <= -10.f ? 0 : 1, strVal, 6);
+    dtostrf(temp, 0, temp <= -10.f ? 0 : 1, strVal);
     display->tft.drawStringWithDatum(strVal, centerPoint.x, centerPoint.y, 4, CC_DATUM);
     display->resetTextColor();
 }

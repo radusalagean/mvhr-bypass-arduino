@@ -20,7 +20,8 @@ void Temperature::requestTemperatures()
 float Temperature::getTemp(DeviceAddress& addr)
 {
     float tempC = sensors.getTempC(addr);
-    if (tempC == DEVICE_DISCONNECTED_C)
+    if (tempC == DEVICE_DISCONNECTED_C ||
+        -100.0f >= tempC || tempC >= 100.0f)
     {
         return TEMP_READ_ERROR;
     }
@@ -51,9 +52,9 @@ Temperatures Temperature::getTemperatures()
 {
     return Temperatures
     {
-        getTemp(extEv),
-        getTemp(extAd),
-        getTemp(intAd),
-        getTemp(intEv)
+        getTempExtEv(),
+        getTempExtAd(),
+        getTempIntAd(),
+        getTempIntEv()
     };
 }

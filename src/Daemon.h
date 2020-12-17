@@ -8,7 +8,7 @@
 
 #define TEMP_REFRESH_INTERVAL 5000 // 5s
 
-#define DISABLE_SCREEN_TIMEOUT // can be uncommented for debugging sessions
+// #define DISABLE_SCREEN_TIMEOUT // can be uncommented for debugging sessions
 #define SCREEN_TIMEOUT 30000 // 30s
 
 class Daemon
