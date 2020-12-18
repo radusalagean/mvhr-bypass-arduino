@@ -83,9 +83,10 @@ void StateController::setTemperatures(const float hysteresis, const uint8_t intE
     if (STATE_TEMPERATURES_RANGE_LOW <= intEvMin && intEvMin <= STATE_TEMPERATURES_RANGE_HIGH)
         state.intEvMin = intEvMin;
     if (STATE_TEMPERATURES_RANGE_LOW <= extAdMin && extAdMin + STATE_RANGE_MIN_VALUES <= extAdMax && extAdMax <= STATE_TEMPERATURES_RANGE_HIGH)
+    {
         state.extAdMin = extAdMin;
-    if (STATE_TEMPERATURES_RANGE_LOW <= extAdMin && extAdMin <= extAdMax - STATE_RANGE_MIN_VALUES && extAdMax <= STATE_TEMPERATURES_RANGE_HIGH)
         state.extAdMax = extAdMax;
+    }
     persistAndSendState();
 }
 
