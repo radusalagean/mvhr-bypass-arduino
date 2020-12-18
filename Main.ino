@@ -10,14 +10,12 @@
 #include "src/Daemon.h"
 #include "src/SerialNetwork.h"
 
-#define DEBUG
-
-#ifdef DEBUG
-
-#include <MemoryFree.h>
 #define BAUD_RATE 9600
 // #define MEMORY_DEBUG
 
+#ifdef MEMORY_DEBUG
+#include <MemoryFree.h>
+unsigned long lastMemCheck = 0L;
 #endif
 
 /**
@@ -63,7 +61,6 @@ Daemon daemon = Daemon(&stateController, &temperature, &userJourney, &serialNetw
 
 void setup(void)
 {
-#ifdef DEBUG
     Serial.begin(BAUD_RATE);
     while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB
@@ -71,7 +68,6 @@ void setup(void)
 #ifdef EEPROM_DEBUG
     internalStorage.printContentToSerial();
 #endif // EEPROM_DEBUG
-#endif // DEBUG
     prepareInterrupts();
     stateController.init(&serialNetwork);
     stateController.loadPersistedState();
@@ -83,10 +79,6 @@ void setup(void)
     temperature.requestTemperatures();
     temperature.setWaitForConversion(false);
 }
-
-#ifdef MEMORY_DEBUG
-unsigned long lastMemCheck = 0L;
-#endif
 
 void loop(void)
 {
