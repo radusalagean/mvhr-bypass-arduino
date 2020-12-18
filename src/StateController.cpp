@@ -78,14 +78,17 @@ void StateController::setHrDisabled(const bool hrDisabled)
 void StateController::setTemperatures(const float hysteresis, const uint8_t intEvMin, 
                                       const uint8_t extAdMin, const uint8_t extAdMax)
 {
-    if (STATE_HYST_RANGE_LOW <= hysteresis && hysteresis <= STATE_HYST_RANGE_HIGH)
-        state.hysteresis = hysteresis;
-    if (STATE_TEMPERATURES_RANGE_LOW <= intEvMin && intEvMin <= STATE_TEMPERATURES_RANGE_HIGH)
-        state.intEvMin = intEvMin;
-    if (STATE_TEMPERATURES_RANGE_LOW <= extAdMin && extAdMin + STATE_RANGE_MIN_VALUES <= extAdMax && extAdMax <= STATE_TEMPERATURES_RANGE_HIGH)
+    // Apply constraints if necessary (sanitize)
+    float hysteresisSan = max(STATE_HYST_RANGE_LOW, min(STATE_HYST_RANGE_HIGH, hysteresis));
+    int intEvMinSan = max(STATE_TEMPERATURES_RANGE_LOW, min(STATE_TEMPERATURES_RANGE_HIGH, intEvMin));
+    int extAdMinSan = max(STATE_TEMPERATURES_RANGE_LOW, min(STATE_TEMPERATURES_RANGE_HIGH, extAdMin));
+    int extAdMaxSan = max(STATE_TEMPERATURES_RANGE_LOW, min(STATE_TEMPERATURES_RANGE_HIGH, extAdMax));
+    state.hysteresis = hysteresisSan;
+    state.intEvMin = intEvMinSan;
+    if (extAdMin + STATE_RANGE_MIN_VALUES <= extAdMax)
     {
-        state.extAdMin = extAdMin;
-        state.extAdMax = extAdMax;
+        state.extAdMin = extAdMinSan;
+        state.extAdMax = extAdMaxSan;
     }
     persistAndSendState();
 }

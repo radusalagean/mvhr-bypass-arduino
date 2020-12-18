@@ -187,7 +187,8 @@ bool SettingsPage::tempRangeCheck(const uint8_t& low, const uint8_t& high,
 bool SettingsPage::tempRangeCheckHyst(const float& low, const float& high,
                                                  const float& requested)
 {
-    return low <= requested && requested <= high + SETTINGS_PAGE_HYST_EDIT_STEP;
+    float floatErrorHeadroom = SETTINGS_PAGE_HYST_EDIT_STEP / 10;
+    return low - floatErrorHeadroom <= requested && requested <= high + floatErrorHeadroom;
 }
 
 void SettingsPage::drawLabels()
