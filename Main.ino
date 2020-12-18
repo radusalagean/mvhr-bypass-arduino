@@ -80,7 +80,8 @@ void setup(void)
     temperature.init();
     userJourney.init();
     serialNetwork.init();
-    daemon.refreshTemperatureData();
+    temperature.requestTemperatures();
+    temperature.setWaitForConversion(false);
 }
 
 #ifdef MEMORY_DEBUG

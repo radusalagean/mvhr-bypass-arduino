@@ -14,6 +14,11 @@ void Temperature::requestTemperatures()
     sensors.requestTemperatures();
 }
 
+void Temperature::setWaitForConversion(const bool wait)
+{
+    sensors.setWaitForConversion(wait);
+}
+
 /**
  * Returns the temperature or TEMP_READ_ERROR
  */

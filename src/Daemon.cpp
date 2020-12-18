@@ -26,7 +26,6 @@ void Daemon::handleOutstandingJobs()
 
 void Daemon::refreshTemperatureData()
 {
-    temperature->requestTemperatures();
     if (stateController->isHrModeAuto())
     {
         TempConfig intEvMinConfig =
@@ -67,5 +66,6 @@ void Daemon::refreshTemperatureData()
     }
     userJourney->processOpcode(OPCODE_REFRESH_TEMP_VALUES_ON_SCREEN);
     serialNetwork->sendTemperatures();
+    temperature->requestTemperatures(); // async call, results should be available in the next cycle
     lastTempRefresh = millis();
 }

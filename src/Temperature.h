@@ -24,6 +24,7 @@ public:
     DallasTemperature sensors = DallasTemperature(&oneWire);
     void init();
     void requestTemperatures();
+    void setWaitForConversion(const bool wait);
     float getTempExtEv();
     float getTempExtAd();
     float getTempIntAd();
